@@ -1,0 +1,45 @@
+﻿namespace School.Db.Models
+{
+    /// <summary>
+    /// Преподаватель
+    /// </summary>
+    public class TeacherItemViewModel
+    {
+        private TeacherModel _item;
+        public TeacherModel Item => _item;
+        public TeacherItemViewModel(TeacherModel item)
+        {
+            _item = item;
+        }
+
+        /// <summary>
+        /// Id преподавателя
+        /// </summary>
+        public int Id { get => _item.Id; set => _item.Id = value; }
+
+        /// <summary>
+        /// Имя
+        /// </summary>
+        public string FirstName { get => _item.FirstName; set => _item.LastName = value; }
+
+        /// <summary>
+        /// Отчество
+        /// </summary>
+        public string MiddleName { get => _item.MiddleName; set => _item.MiddleName = value; }
+
+        /// <summary>
+        /// Фамилия
+        /// </summary>
+        public string LastName { get => _item.LastName; set => _item.LastName = value; }
+
+        /// <summary>
+        /// Возраст
+        /// </summary>
+        public int Age { get => _item.Age; set => _item.Age = value; }
+
+        /// <summary>
+        /// Предмет
+        /// </summary>
+        public string SubjectName { get => _item.SubjectName; set => _item.SubjectName = value; }
+    }
+}

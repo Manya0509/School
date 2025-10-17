@@ -1,0 +1,40 @@
+﻿@page "/ClassModel"
+@inherits ClassPageViewModel
+<h3>Классы и ученики</h3>
+
+@foreach (var classItem in Classes)
+{
+    <table class="table table-striped">
+        <h4>Класс @classItem.Number</h4>
+
+        <table class="table table-striped table-bordered">
+            <thead class="table">
+                <tr>
+                    <th>ID</th>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Отчество</th>
+                    <th>Возраст</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in classItem.Students)
+                {
+                    <tr>
+                    <td>@student.Id</td>
+                    <td>@student.LastName</td>
+                    <td>@student.FirstName</td>
+                    <td>@student.MiddleName</td>
+                    <td>@student.Age</td>
+                    </tr>
+                 }
+            </tbody>
+        </table>
+    </table>
+}
+
+
+
+@code {
+
+}

@@ -1,0 +1,33 @@
+﻿@page "/Management"
+@inherits ManagementPageViewModel
+<h3>Руководство</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Должность</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Возраст</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var management in Managements)
+        {
+            <tr>
+                <td>@management.Id</td>
+                <td>@management.Function</td>
+                <td>@management.LastName</td>
+                <td>@management.FirstName</td>
+                <td>@management.MiddleName</td>
+                <td>@management.Age</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+}

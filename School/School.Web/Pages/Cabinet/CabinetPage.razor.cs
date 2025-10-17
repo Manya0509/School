@@ -1,0 +1,23 @@
+﻿using Microsoft.AspNetCore.Components;
+using School.Web.Data.Services;
+
+namespace School.Web.Pages.Cabinet
+{
+    public class CabinetPageViewModel : ComponentBase
+    {
+        [Inject] 
+        public CabinetService CabinetService { get; set; }
+        protected List<School.Db.Models.CabinetModel> Cabinets { get; set; } = new();
+        protected override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                Cabinets = CabinetService.GetCabinets();
+                StateHasChanged();
+            }
+
+            return base.OnAfterRenderAsync(firstRender);
+        }
+
+    }
+}

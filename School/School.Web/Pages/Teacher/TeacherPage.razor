@@ -1,0 +1,33 @@
+﻿@page "/Teacher"
+@inherits TeacherPageViewModel
+<h3>Преподаватели</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Возраст</th>
+            <th>Предмет</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var teacher in Teachers)
+        {
+            <tr>
+                <td>@teacher.Id</td>
+                <td>@teacher.LastName</td>
+                <td>@teacher.FirstName</td>
+                <td>@teacher.MiddleName</td>
+                <td>@teacher.Age</td>
+                <td>@teacher.SubjectName</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+}

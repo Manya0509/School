@@ -1,0 +1,34 @@
+﻿@page "/Cabinet"
+@inherits CabinetPageViewModel
+
+<div class="d-flex justify-content-end">
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+
+<h3>Кабинеты</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Номер кабинета</th>
+            <th>Учитель</th>
+            <th>Предмет</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cabinet in Cabinets)
+        {
+            <tr>
+                <td>@cabinet.Id</td>
+                <td>@cabinet.Number</td>
+                <td>@cabinet.TeacherFullName</td>
+                <td>@cabinet.Teacher.SubjectName</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+}
