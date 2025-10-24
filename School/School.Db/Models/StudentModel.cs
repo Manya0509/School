@@ -1,10 +1,17 @@
-﻿namespace School.Db.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace School.Db.Models
 {
+    [Table("Students")]
+
     /// <summary>
     /// Ученик
     /// </summary>
     public class StudentModel
     {
+        [Key]
+
         /// <summary>
         /// Id ученика
         /// </summary>
@@ -34,6 +41,6 @@
         /// Класс
         /// </summary>
         public int ClassId { get; set; }
-        public virtual ClassModel Class { get; set; }
+        //public virtual ClassModel Class { get; set; }
     }
 }

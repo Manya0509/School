@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using School.Web.Data;
 using School.Web.Data.Services;
 using MatBlazor;
+using School.Db;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,30 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddDbContext<SchoolDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentContext"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
+
+//builder.Services.AddDbContext<SchoolDbContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("TeacherContext"));
+//    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+//});
+
+//builder.Services.AddDbContext<SchoolDbContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("ManagementContext"));
+//    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+//});
+
+//builder.Services.AddDbContext<SchoolDbContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("ClassContext"));
+//    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+//});
 
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<CabinetService>();

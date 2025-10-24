@@ -1,10 +1,15 @@
-﻿namespace School.Db.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace School.Db.Models
 {
+    [Table("Teachers")]
     /// <summary>
     /// Преподаватель
     /// </summary>
     public class TeacherModel
     {
+        [Key]
         /// <summary>
         /// Id преподавателя
         /// </summary>

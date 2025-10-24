@@ -19,9 +19,9 @@
         /// id предмета
         /// </summary>
         public int? TeacherId { get; set; }
-        public TeacherModel Teacher { get; set; }
+        //public TeacherModel Teacher { get; set; }
 
-        public string TeacherFullName =>
-            Teacher != null ? $"{Teacher.LastName} {Teacher.FirstName} {Teacher.MiddleName}" : "Не назначен";
+        //public string TeacherFullName =>
+        //    Teacher != null ? $"{Teacher.LastName} {Teacher.FirstName} {Teacher.MiddleName}" : "Не назначен";
     }
 }

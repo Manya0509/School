@@ -1,10 +1,16 @@
-﻿namespace School.Db.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace School.Db.Models
 {
+    [Table("Managements")]
+
     /// <summary>
     /// Руководство
     /// </summary>
     public class ManagementModel
     {
+        [Key]
         /// <summary>
         /// id руководитея
         /// </summary>

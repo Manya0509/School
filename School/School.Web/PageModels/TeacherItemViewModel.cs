@@ -20,7 +20,7 @@
         /// <summary>
         /// Имя
         /// </summary>
-        public string FirstName { get => _item.FirstName; set => _item.LastName = value; }
+        public string FirstName { get => _item.FirstName; set => _item.FirstName = value; }
 
         /// <summary>
         /// Отчество

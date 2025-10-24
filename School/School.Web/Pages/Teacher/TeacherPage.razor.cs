@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using School.Db.Models;
 using School.Web.Data.Services;
 
 namespace School.Web.Pages.Teacher
@@ -7,7 +8,7 @@ namespace School.Web.Pages.Teacher
     {
         [Inject]
         public TeacherService TeacherService { get; set; }
-        protected List<School.Db.Models.TeacherModel> Teachers { get; set; } = new();
+        protected List<TeacherItemViewModel> Teachers { get; set; } = new();
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
