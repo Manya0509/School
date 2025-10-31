@@ -10,6 +10,7 @@ namespace School.Web.Pages.Student
         public StudentService StudentService { get; set; }
 
         protected List<StudentItemViewModel> Students { get; set; } = new();
+        protected StudentItemViewModel? SelectedStudent { get; set; }
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
@@ -20,6 +21,46 @@ namespace School.Web.Pages.Student
             }
 
             return base.OnAfterRenderAsync(firstRender);
+        }
+
+        protected void SelectStudent(StudentItemViewModel student)
+        {
+            SelectedStudent = new StudentItemViewModel(student.Item);
+        }
+
+        protected void SaveChanges()
+        {
+            if (SelectedStudent != null)
+            {
+                if (SelectedStudent.Id == 0)
+                {
+                    StudentService.AddStudent(SelectedStudent);
+                }
+                else
+                {
+                    StudentService.Update(SelectedStudent);
+                }
+
+                Students = StudentService.GetStudents();
+                SelectedStudent = null;
+                StateHasChanged();
+            }
+        }
+
+        protected void CancelEdit()
+        {
+            SelectedStudent = null;
+        }
+
+        protected void Update(StudentItemViewModel student)
+        {
+            //student.MiddleName = student.;
+            //StudentService.Update(student);
+        }
+
+        protected void AddNewStudent()
+        {
+            SelectedStudent = new StudentItemViewModel(new StudentModel());
         }
     }
 }

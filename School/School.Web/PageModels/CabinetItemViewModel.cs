@@ -29,9 +29,7 @@
         /// </summary>
         public int? TeacherId { get => _item.TeacherId; set => _item.TeacherId = value; }
 
+        public string TeacherFullName { get; set; }
         public TeacherModel Teacher { get; set; }
-
-        public string TeacherFullName =>
-            Teacher != null ? $"{Teacher.LastName} {Teacher.FirstName} {Teacher.MiddleName}" : "Не назначен";
     }
 }

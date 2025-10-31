@@ -16,42 +16,28 @@ namespace School.Web.Data.Services
         
         public List<ClassItemViewModel> GetClasses()
         {
-            var students = _studentService.GetStudents();
+            var classes = _context.ClassDbSet.ToList();
+            var students = _context.StudentDbSet.ToList();
 
-            var list  = _context.ClassDbSet.ToList();
-            return list.ConvertAll(x => ConvertItem(x));
-
-           //return new List<ClassModel>
-            //{
-                //new ClassModel
-                //{
-                //    Id = 1,
-                //    Number = 1,
-                //    Students = students.Where(s => s.ClassId == 1).ToList()
-                //},
-                //new ClassModel
-                //{
-                //    Id = 2,
-                //    Number = 2,
-                //    Students = students.Where(s => s.ClassId == 2).ToList()
-                //},
-                //new ClassModel
-                //{
-                //    Id = 3,
-                //    Number = 3,
-                //    Students = students.Where(s => s.ClassId == 3).ToList()
-                //},
-                //new ClassModel
-                //{
-                //    Id = 4,
-                //    Number = 4,
-                //    Students = students.Where(s => s.ClassId == 4).ToList()
-                //}
+            var result = classes.ConvertAll(classModel =>
+            {
+                var classStudents = students.Where(s => s.ClassId == classModel.Id).ToList();
+                return ConvertItem(classModel, classStudents);
+            });
+            return result;
         }
 
-        private ClassItemViewModel ConvertItem(ClassModel x)
+        private ClassItemViewModel ConvertItem(ClassModel classModel, List<StudentModel> students)
         {
-            var item = new ClassItemViewModel(x);
+            var item = new ClassItemViewModel(classModel);
+
+            if (students != null && students.Any())
+            {
+                item.Students = students
+                    .Select(s => new StudentItemViewModel(s))
+                    .ToList();
+            }
+
             return item;
         }
     }

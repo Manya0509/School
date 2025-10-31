@@ -42,5 +42,8 @@ namespace School.Db.Models
         /// </summary>
         public int ClassId { get; set; }
         //public virtual ClassModel Class { get; set; }
+
+        [ForeignKey("ClassId")]
+        public virtual ClassModel Class { get; set; }
     }
 }

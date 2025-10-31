@@ -19,24 +19,6 @@ builder.Services.AddDbContext<SchoolDbContext>(options =>
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
-//builder.Services.AddDbContext<SchoolDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("TeacherContext"));
-//    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-//});
-
-//builder.Services.AddDbContext<SchoolDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("ManagementContext"));
-//    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-//});
-
-//builder.Services.AddDbContext<SchoolDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("ClassContext"));
-//    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-//});
-
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<CabinetService>();
 builder.Services.AddScoped<ClassModelService>();

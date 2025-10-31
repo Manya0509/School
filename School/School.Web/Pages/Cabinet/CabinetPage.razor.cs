@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using School.Db.Models;
 using School.Web.Data.Services;
 
 namespace School.Web.Pages.Cabinet
@@ -7,7 +8,7 @@ namespace School.Web.Pages.Cabinet
     {
         [Inject] 
         public CabinetService CabinetService { get; set; }
-        protected List<School.Db.Models.CabinetModel> Cabinets { get; set; } = new();
+        protected List<CabinetItemViewModel> Cabinets { get; set; } = new();
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)

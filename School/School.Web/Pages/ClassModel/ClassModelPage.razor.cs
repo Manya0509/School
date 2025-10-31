@@ -19,15 +19,5 @@ namespace School.Web.Pages.ClassModel
 
             return base.OnAfterRenderAsync(firstRender);
         }
-
-        //protected override Task OnAfterRenderAsync(bool firstRender)
-        //{
-        //    if (firstRender)
-        //    {
-        //        var classModel = ClassModelService.GetClassModel();
-        //    }
-
-        //    return base.OnAfterRenderAsync(firstRender);
-        //}
     }
 }

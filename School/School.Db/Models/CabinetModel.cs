@@ -1,10 +1,15 @@
-﻿namespace School.Db.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace School.Db.Models
 {
+    [Table("Cabinets")]
     /// <summary>
     /// Кабинеты
     /// </summary>
     public class CabinetModel
     {
+        [Key]
         /// <summary>
         /// id кабинета
         /// </summary>
@@ -19,6 +24,10 @@
         /// id предмета
         /// </summary>
         public int? TeacherId { get; set; }
+
+        [ForeignKey("TeacherId")]
+        public virtual TeacherModel Teacher { get; set; }
+
         //public TeacherModel Teacher { get; set; }
 
         //public string TeacherFullName =>
