@@ -7,7 +7,7 @@ namespace School.Db.Models
     /// <summary>
     /// Преподаватель
     /// </summary>
-    public class TeacherModel
+    public class TeacherModel : ICloneable
     {
         [Key]
         /// <summary>
@@ -39,5 +39,11 @@ namespace School.Db.Models
         /// Предмет
         /// </summary>
         public string SubjectName { get; set; }
+
+        public object Clone()
+        {
+            TeacherModel tempObject = (TeacherModel)MemberwiseClone();
+            return tempObject;
+        }
     }
 }

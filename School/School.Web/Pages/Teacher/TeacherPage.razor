@@ -34,10 +34,11 @@
         }
     </tbody>
 </table>
+<button class="btn btn-primary mb-3" @onclick="AddNewTeacher">Добавить преподавателя</button>
 
 @if (SelectedTeacher != null)
 {
-    <h4>Изменение данных преподавателя</h4>
+    <h4>@(SelectedTeacher.Id == 0 ? "Добавление нового преподавателя" : "Изменение данных преподавателя")</h4>
 
     <div class="card p-3 mt-3">
         <div class="form-group">
@@ -65,13 +66,14 @@
             <input class="form-control" @bind="SelectedTeacher.SubjectName" />
         </div>
 
-        <div class="mt-3">
+        @* <div class="mt-3">
             <button class="btn btn-success" @onclick="SaveChanges">Сохранить</button>
             <button class="btn btn-secondary" @onclick="CancelEdit">Отмена</button>
-        </div>
+        </div> *@
     </div>
     
 }
+<EditTeacherDialog ViewModel="EditModel" Save="SaveChanges"></EditTeacherDialog>
 
 @code {
 

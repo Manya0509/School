@@ -1,9 +1,11 @@
-﻿namespace School.Db.Models
+﻿using School.Db.Models;
+
+namespace School.Web.PageModels.Teachers
 {
     /// <summary>
     /// Преподаватель
     /// </summary>
-    public class TeacherItemViewModel
+    public class TeacherItemViewModel : ICloneable
     {
         private TeacherModel _item;
         public TeacherModel Item => _item;
@@ -41,5 +43,12 @@
         /// Предмет
         /// </summary>
         public string SubjectName { get => _item.SubjectName; set => _item.SubjectName = value; }
+
+        public object Clone()
+        {
+            TeacherItemViewModel tempObject = (TeacherItemViewModel)MemberwiseClone();
+            tempObject._item = (TeacherModel)_item.Clone();
+            return tempObject;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿
 using School.Db;
 using School.Db.Models;
+using School.Web.PageModels.Teachers;
 
 namespace School.Web.Data.Services
 {
@@ -39,6 +40,13 @@ namespace School.Web.Data.Services
         {
             var item = new TeacherItemViewModel(x);
             return item;
+        }
+
+        public void AddTeacher(TeacherItemViewModel teacher)
+        { 
+            var entity = teacher.Item;
+            _context.TeacherDbSet.Add(entity);
+            _context.SaveChanges(); 
         }
     }
 }

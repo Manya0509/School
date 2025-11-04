@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using School.Db.Models;
 using School.Web.Data.Services;
+using School.Web.PageModels.Teachers;
 
 namespace School.Web.Pages.Teacher
 {
@@ -10,6 +10,7 @@ namespace School.Web.Pages.Teacher
         public TeacherService TeacherService { get; set; }
         protected List<TeacherItemViewModel> Teachers { get; set; } = new();
         protected TeacherItemViewModel? SelectedTeacher { get; set; }
+        protected EditTeacherModel EditModel { get; set; } = new();
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
@@ -24,7 +25,11 @@ namespace School.Web.Pages.Teacher
 
         protected void SelectTeacher(TeacherItemViewModel teacher)
         {
-            SelectedTeacher = new TeacherItemViewModel(teacher.Item);
+            //SelectedTeacher = new TeacherItemViewModel(teacher.Item);
+            EditModel = new();
+            EditModel.Model = (TeacherItemViewModel)teacher.Clone();
+            EditModel.IsOpenDialog = true;
+            StateHasChanged();
         }
 
         protected void Update(TeacherItemViewModel teacher)
@@ -33,20 +38,35 @@ namespace School.Web.Pages.Teacher
             //TeacherService.Update(teacher);
         }
 
-        protected void SaveChanges()
+        protected void SaveChanges(TeacherItemViewModel item)
         {
-            if (SelectedTeacher != null)
-            { 
-                TeacherService.Update(SelectedTeacher);
+            if (item != null)
+            {
+                if (item.Id == 0)
+                {
+                    TeacherService.AddTeacher(item);
+                }
+                else
+                {
+                    TeacherService.Update(item);
+                }
                 Teachers = TeacherService.GetTeachers();
-                SelectedTeacher = null;
+                item = null;
                 StateHasChanged();
             }
+            EditModel.IsOpenDialog = false;
         }
 
         protected void CancelEdit()
         {
             SelectedTeacher = null;
+        }
+        protected void AddNewTeacher()
+        {
+            EditModel = new();
+            EditModel.Model = new TeacherItemViewModel(new Db.Models.TeacherModel());
+            EditModel.IsOpenDialog = true;
+            StateHasChanged();
         }
     }
 }
