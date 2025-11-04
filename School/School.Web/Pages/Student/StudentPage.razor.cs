@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using School.Db.Models;
 using School.Web.Data.Services;
+using School.Web.PageModels.Students;
 
 namespace School.Web.Pages.Student
 {
@@ -11,6 +12,8 @@ namespace School.Web.Pages.Student
 
         protected List<StudentItemViewModel> Students { get; set; } = new();
         protected StudentItemViewModel? SelectedStudent { get; set; }
+
+        protected EditStudentModel EditModel { get; set; } = new();
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
@@ -25,26 +28,31 @@ namespace School.Web.Pages.Student
 
         protected void SelectStudent(StudentItemViewModel student)
         {
-            SelectedStudent = new StudentItemViewModel(student.Item);
+            //SelectedStudent = new StudentItemViewModel(student.Item);
+            EditModel = new();
+            EditModel.Model = (StudentItemViewModel)student.Clone();
+            EditModel.IsOpenDialog = true;
+            StateHasChanged();
         }
 
-        protected void SaveChanges()
+        protected void SaveChanges(StudentItemViewModel item)
         {
-            if (SelectedStudent != null)
+            if (item != null)
             {
-                if (SelectedStudent.Id == 0)
+                if (item.Id == 0)
                 {
-                    StudentService.AddStudent(SelectedStudent);
+                    StudentService.AddStudent(item);
                 }
                 else
                 {
-                    StudentService.Update(SelectedStudent);
+                    StudentService.Update(item);
                 }
 
                 Students = StudentService.GetStudents();
-                SelectedStudent = null;
+                item = null;
                 StateHasChanged();
             }
+            EditModel.IsOpenDialog = false;
         }
 
         protected void CancelEdit()
@@ -60,7 +68,11 @@ namespace School.Web.Pages.Student
 
         protected void AddNewStudent()
         {
-            SelectedStudent = new StudentItemViewModel(new StudentModel());
+            //SelectedStudent = new StudentItemViewModel(new StudentModel());
+            EditModel = new();
+            EditModel.Model = new StudentItemViewModel(new StudentModel());
+            EditModel.IsOpenDialog = true;
+            StateHasChanged();
         }
     }
 }

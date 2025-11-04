@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Db.Models
@@ -8,7 +9,7 @@ namespace School.Db.Models
     /// <summary>
     /// Ученик
     /// </summary>
-    public class StudentModel
+    public class StudentModel : ICloneable
     {
         [Key]
 
@@ -45,5 +46,11 @@ namespace School.Db.Models
 
         [ForeignKey("ClassId")]
         public virtual ClassModel Class { get; set; }
+
+        public object Clone()
+        {
+            StudentModel tempObject = (StudentModel)MemberwiseClone();
+            return tempObject;
+        }
     }
 }

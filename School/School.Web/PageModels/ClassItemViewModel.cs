@@ -1,4 +1,6 @@
-﻿namespace School.Db.Models
+﻿using School.Web.PageModels.Students;
+
+namespace School.Db.Models
 {
     /// <summary>
     /// Класс
