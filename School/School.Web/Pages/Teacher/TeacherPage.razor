@@ -12,6 +12,7 @@
             <th>Возраст</th>
             <th>Предмет</th>
             <th>Изменение</th>
+            <th>Удаление</th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +29,12 @@
                     <button class="btn btn-outline-secondary"
                             @onclick="@(() => SelectTeacher(teacher))">
                         Изменить
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-outline-danger"
+                            @onclick="@(() => DeleteTeacher(teacher))">
+                        Удалить
                     </button>
                 </td>
             </tr>
@@ -74,6 +81,7 @@
     
 }
 <EditTeacherDialog ViewModel="EditModel" Save="SaveChanges"></EditTeacherDialog>
+<DeleteTeacherDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteTeacherDialog>
 
 @code {
 

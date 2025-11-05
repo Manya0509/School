@@ -1,0 +1,23 @@
+﻿@using School.Web.PageModels.Teachers
+
+<MatDialog IsOpen="@ViewModel.IsOpenDialog" CanBeClosed="false">
+    <MatDialogTitle class="diHeader">
+        <h4>Подтверждение удаления</h4>
+    </MatDialogTitle>
+    <MatDialogContent>
+        @if (ViewModel.TeacherDelete != null)
+        {
+            <h5>Вы уверены, что хотете удалить преподавателя: </h5>
+            <p><strong>@ViewModel.TeacherDelete.LastName @ViewModel.TeacherDelete.FirstName @ViewModel.TeacherDelete.MiddleName</strong>?</p>
+        }
+    </MatDialogContent>
+    <MatDialogActions>
+        <button class="btn btn-danger" @onclick="@(() => ConfirmDelete.InvokeAsync(true))">Да, удалить</button>
+        <button class="btn btn-secondary" @onclick="@(() => ConfirmDelete.InvokeAsync(false))">Отмена</button>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    [Parameter] public DeleteTeacherModel ViewModel { get; set; }
+    [Parameter] public EventCallback<bool> ConfirmDelete { get; set; }
+}

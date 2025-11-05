@@ -11,6 +11,7 @@ namespace School.Web.Pages.Teacher
         protected List<TeacherItemViewModel> Teachers { get; set; } = new();
         protected TeacherItemViewModel? SelectedTeacher { get; set; }
         protected EditTeacherModel EditModel { get; set; } = new();
+        protected DeleteTeacherModel DeleteModel { get; set; } = new();
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
@@ -51,16 +52,11 @@ namespace School.Web.Pages.Teacher
                     TeacherService.Update(item);
                 }
                 Teachers = TeacherService.GetTeachers();
-                item = null;
                 StateHasChanged();
             }
             EditModel.IsOpenDialog = false;
         }
 
-        protected void CancelEdit()
-        {
-            SelectedTeacher = null;
-        }
         protected void AddNewTeacher()
         {
             EditModel = new();
@@ -68,5 +64,28 @@ namespace School.Web.Pages.Teacher
             EditModel.IsOpenDialog = true;
             StateHasChanged();
         }
+
+        protected void DeleteTeacher(TeacherItemViewModel teacher)
+        {
+            if (teacher != null)
+            {
+                DeleteModel = new();
+                DeleteModel.TeacherDelete = teacher;
+                DeleteModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+        }
+        protected void ConfirmDelete(bool confirmed)
+        {
+            if (confirmed && DeleteModel.TeacherDelete != null)
+            {
+                TeacherService.DeleteTeacher(DeleteModel.TeacherDelete);
+                Teachers = TeacherService.GetTeachers();
+                StateHasChanged();
+            }
+            DeleteModel.IsOpenDialog = false;
+            DeleteModel.TeacherDelete = null;
+        }
+
     }
 }

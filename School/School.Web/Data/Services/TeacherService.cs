@@ -48,5 +48,19 @@ namespace School.Web.Data.Services
             _context.TeacherDbSet.Add(entity);
             _context.SaveChanges(); 
         }
+
+        public void DeleteTeacher(TeacherItemViewModel teacher)
+        {
+            if (teacher.Item != null)
+            {
+                var entity = _context.TeacherDbSet.FirstOrDefault(t => t.Id == teacher.Id);
+                if (entity != null)
+                { 
+                    _context.TeacherDbSet.Remove(entity);
+                    _context.SaveChanges();
+                }
+            }
+        }
     }
 }
+
