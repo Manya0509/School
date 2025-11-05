@@ -14,6 +14,7 @@ namespace School.Web.Pages.Student
         protected StudentItemViewModel? SelectedStudent { get; set; }
 
         protected EditStudentModel EditModel { get; set; } = new();
+        protected DeleteStudentModel DeleteModel { get; set; } = new();
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
@@ -49,15 +50,9 @@ namespace School.Web.Pages.Student
                 }
 
                 Students = StudentService.GetStudents();
-                item = null;
                 StateHasChanged();
             }
             EditModel.IsOpenDialog = false;
-        }
-
-        protected void CancelEdit()
-        {
-            SelectedStudent = null;
         }
 
         protected void Update(StudentItemViewModel student)
@@ -73,6 +68,29 @@ namespace School.Web.Pages.Student
             EditModel.Model = new StudentItemViewModel(new StudentModel());
             EditModel.IsOpenDialog = true;
             StateHasChanged();
+        }
+
+        protected void DeleteStudent(StudentItemViewModel student)
+        {
+            if (student != null)
+            { 
+                DeleteModel = new();
+                DeleteModel.StudentDelete = student;
+                DeleteModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+        }
+
+        protected void ConfirmDelete(bool confirmed)
+        {
+            if (confirmed && DeleteModel.StudentDelete != null)
+            {
+                StudentService.DeleteStudent(DeleteModel.StudentDelete);
+                Students = StudentService.GetStudents();
+                StateHasChanged();
+            }
+            DeleteModel.IsOpenDialog = false;
+            DeleteModel.StudentDelete = null;
         }
     }
 }

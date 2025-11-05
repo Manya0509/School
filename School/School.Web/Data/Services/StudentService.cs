@@ -53,5 +53,18 @@ namespace School.Web.Data.Services
             _context.StudentDbSet.Add(entity);
             _context.SaveChanges();
         }
+
+        public void DeleteStudent(StudentItemViewModel student)
+        {
+            if (student.Item != null)
+            {
+                var entity = _context.StudentDbSet.FirstOrDefault(s => s.Id == student.Id);
+                if (entity != null)
+                { 
+                    _context.StudentDbSet.Remove(entity);
+                    _context.SaveChanges();
+                }
+            }
+        }
     }
 }
