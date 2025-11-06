@@ -8,7 +8,7 @@ namespace School.Db.Models
     /// <summary>
     /// Руководство
     /// </summary>
-    public class ManagementModel
+    public class ManagementModel : ICloneable
     {
         [Key]
         /// <summary>
@@ -19,7 +19,7 @@ namespace School.Db.Models
         /// <summary>
         /// Должность
         /// </summary>
-        public string Function { get; set; }
+        public string Position  { get; set; }
 
         /// <summary>
         /// Имя
@@ -40,5 +40,11 @@ namespace School.Db.Models
         /// Возраст
         /// </summary>
         public int Age { get; set; }
+
+        public object Clone()
+        {
+            ManagementModel tempObject = (ManagementModel)MemberwiseClone();
+            return tempObject;
+        }
     }
 }

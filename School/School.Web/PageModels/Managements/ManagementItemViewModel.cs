@@ -1,9 +1,12 @@
-﻿namespace School.Db.Models
+﻿using School.Db.Models;
+using School.Web.PageModels.Students;
+
+namespace School.Web.PageModels.Managements
 {
     /// <summary>
     /// Руководство
     /// </summary>
-    public class ManagementItemViewModel
+    public class ManagementItemViewModel : ICloneable
     {
         private ManagementModel _item;
         public ManagementModel Item => _item;
@@ -20,7 +23,7 @@
         /// <summary>
         /// Должность
         /// </summary>
-        public string Function { get => _item.Function; set => _item.Function = value; }
+        public string Position  { get => _item.Position ; set => _item.Position  = value; }
 
         /// <summary>
         /// Имя
@@ -41,5 +44,12 @@
         /// Возраст
         /// </summary>
         public int Age { get => _item.Age; set => _item.Age = value; }
+
+        public object Clone()
+        {
+            ManagementItemViewModel tempObject = (ManagementItemViewModel)MemberwiseClone();
+            tempObject._item = (ManagementModel)_item.Clone();
+            return tempObject;
+        }
     }
 }

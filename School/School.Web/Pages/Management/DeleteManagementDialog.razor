@@ -1,14 +1,14 @@
-﻿@using School.Web.PageModels.Teachers
+﻿@using School.Web.PageModels.Managements
 
 <MatDialog IsOpen="@ViewModel.IsOpenDialog" CanBeClosed="false">
     <MatDialogTitle class="diHeader">
         <h4>Подтверждение удаления</h4>
     </MatDialogTitle>
     <MatDialogContent>
-        @if (ViewModel.TeacherDelete != null)
+        @if (ViewModel.ManagementDelete != null)
         {
-            <h5>Вы уверены, что хотите удалить преподавателя: </h5>
-            <p><strong>@ViewModel.TeacherDelete.LastName @ViewModel.TeacherDelete.FirstName @ViewModel.TeacherDelete.MiddleName</strong>?</p>
+            <h5>Вы уверены, что хотете удалить руководителя: </h5>
+            <p><strong>@ViewModel.ManagementDelete.LastName @ViewModel.ManagementDelete.FirstName @ViewModel.ManagementDelete.MiddleName</strong>?</p>
         }
     </MatDialogContent>
     <MatDialogActions>
@@ -18,6 +18,7 @@
 </MatDialog>
 
 @code {
-    [Parameter] public DeleteTeacherModel ViewModel { get; set; }
+    [Parameter] public DeleteManagementModel ViewModel { get; set; }
     [Parameter] public EventCallback<bool> ConfirmDelete { get; set; }
 }
+

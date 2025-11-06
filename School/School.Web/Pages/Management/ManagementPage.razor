@@ -11,6 +11,8 @@
             <th>Имя</th>
             <th>Отчество</th>
             <th>Возраст</th>
+            <th>Изменение</th>
+            <th>Удаление</th>
         </tr>
     </thead>
     <tbody>
@@ -18,15 +20,32 @@
         {
             <tr>
                 <td>@management.Id</td>
-                <td>@management.Function</td>
+                <td>@management.Position </td>
                 <td>@management.LastName</td>
                 <td>@management.FirstName</td>
                 <td>@management.MiddleName</td>
                 <td>@management.Age</td>
+                <td>
+                    <button class="btn btn-outline-secondary"
+                            @onclick="@(() => SelectManagement(management))">
+                        Изменить
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-outline-danger"
+                    onclick="@(() => DeleteManagement(management))">
+                    Удалить
+                </button>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+<button class="btn btn-primary mb-3" @onclick="AddNewManagement">Добавить руководителя</button>
+
+<EditManagementDialog ViewModel="EditModel" Save="SaveChanges"></EditManagementDialog>
+<DeleteManagementDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteManagementDialog>
 
 @code {
 

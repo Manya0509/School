@@ -17,6 +17,30 @@ namespace School.Db
         public DbSet<ClassModel> ClassDbSet { get; set; }
         public DbSet<CabinetModel> CabinetDbSet { get; set; }
 
+        public object UpdateManagement(ManagementModel management)
+        {
+            var sql = @"Update Managements
+                Set Position  = @pPosition ,
+                FirstName = @pFirstName,
+                LastName = @pLastName,
+                MiddleName = @pMiddleName,
+                Age = @pAge
+                Where Id = @pId";
+
+            var list = new List<SqlParameter> {
+                new SqlParameter("@pPosition", management.Position),
+                new SqlParameter("@pFirstName", management.FirstName),
+                new SqlParameter("@pLastName", management.LastName),
+                new SqlParameter("@pMiddleName", management.MiddleName),
+                new SqlParameter("@pAge", management.Age),
+                new SqlParameter("@pId", management.Id) };
+
+            this.Database.ExecuteSqlRaw(sql, list);
+            var sqlSelect = "Select * from Managements where Id = " + management.Id;
+            var result = ManagementDbSet.FromSqlRaw(sqlSelect).FirstOrDefault();
+            return result;
+        }
+        
         public StudentModel UpdateStudent(StudentModel student)
         {
             var sql = @"Update Students
