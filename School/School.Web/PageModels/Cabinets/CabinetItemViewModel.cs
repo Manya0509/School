@@ -1,4 +1,6 @@
-﻿namespace School.Db.Models
+﻿using School.Db.Models;
+
+namespace School.Web.PageModels.Cabinets
 {
     /// <summary>
     /// Кабинеты

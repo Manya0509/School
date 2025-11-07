@@ -1,45 +1,65 @@
 ﻿@using School.Web.PageModels.Students
 
+@if (ViewModel?.Model != null)
+{
+    <MatDialog IsOpen="@ViewModel.IsOpenDialog" CanBeClosed="false">
+        <EditForm Model="ViewModel.Model" OnValidSubmit="@(() => { Save.InvokeAsync(ViewModel.Model); })">
+            <MatDialogTitle class="diHeader">
+            </MatDialogTitle>
+            <MatDialogContent>
+                <DataAnnotationsValidator />
 
-<MatDialog IsOpen="@ViewModel.IsOpenDialog" CanBeClosed="false">
-    <MatDialogTitle class="diHeader">
-    </MatDialogTitle>
-    <MatDialogContent>
-        @if (ViewModel.Model != null)
-        {
-            <h4>@(ViewModel.Model.Id == 0 ? "Добавление нового ученика" : "Изменение данных ученика")</h4>
+                @if (ViewModel.Model != null)
+                {
+                    <h4>@(ViewModel.Model.Id == 0 ? "Добавление нового ученика" : "Изменение данных ученика")</h4>
 
-            <div class="card p-3 mt-3">
-                <div class="form-group">
-                    <label>Фамилия:</label>
-                    <input class="form-control" @bind="ViewModel.Model.LastName" />
-                </div>
+                    <div class="card p-3 mt-3">
+                        <div class="form-group">
+                            <label>Фамилия:</label>
+                            <InputText @bind-Value="@ViewModel.Model.LastName" Class="form-control form-control-sm col-9" id="LastName"></InputText>
+                            <ValidationMessage For="@(() => ViewModel.Model.LastName)" />
+                            @* <input class="form-control" @bind="ViewModel.Model.LastName" /> *@
+                        </div>
 
-                <div class="form-group mt-2">
-                    <label>Имя:</label>
-                    <input class="form-control" @bind="ViewModel.Model.FirstName" />
-                </div>
+                        <div class="form-group mt-2">
+                            <label>Имя:</label>
+                            <InputText @bind-Value="@ViewModel.Model.FirstName" Class="form-control form-control-sm col-9" id="FirstName"></InputText>
+                            <ValidationMessage For="@(() => ViewModel.Model.FirstName)" />
+                            @* <input class="form-control" @bind="ViewModel.Model.FirstName" /> *@
+                        </div>
 
-                <div class="form-group mt-2">
-                    <label>Отчество:</label>
-                    <input class="form-control" @bind="ViewModel.Model.MiddleName" />
-                </div>
+                        <div class="form-group mt-2">
+                            <label>Отчество:</label>
+                            <InputText @bind-Value="@ViewModel.Model.MiddleName" Class="form-control form-control-sm col-9" id="MiddleName"></InputText>
+                            <ValidationMessage For="@(() => ViewModel.Model.MiddleName)" />
+                            @* <input class="form-control" @bind="ViewModel.Model.MiddleName" /> *@
+                        </div>
 
-                <div class="form-group mt-2">
-                    <label>Возраст:</label>
-                    <input type="number" class="form-control" @bind="ViewModel.Model.Age" />
-                </div>
+                        <div class="form-group mt-2">
+                            <label>Возраст:</label>
+                            <InputNumber @bind-Value="@ViewModel.Model.Age" Class="form-control form-control-sm col-9" id="Age"></InputNumber>
+                            <ValidationMessage For="@(() => ViewModel.Model.Age)" />
+                            @* <input type="number" class="form-control" @bind="ViewModel.Model.Age" /> *@
+                        </div>
 
-                <div class="form-group mt-2">
-                    <label>Класс:</label>
-                    <input type="number" class="form-control" @bind="ViewModel.Model.ClassId" />
-                </div>
-            </div>
-        }
-        <button class="btn btn-success" @onclick="@(() => Save.InvokeAsync(ViewModel.Model))">Сохранить</button>
-        <button class="btn btn-secondary ms-2" @onclick="@(() => Save.InvokeAsync(null))">Отмена</button>
-    </MatDialogContent>
-</MatDialog>
+                        <div class="form-group mt-2">
+                            <label>Класс:</label>
+                            <InputSelect @bind-Value="@ViewModel.Model.ClassId" Class="form-control form-control-sm " id="ClassId">
+                                @foreach (var item in ViewModel.Classes)
+                                {
+                                    <option value="@item.Id">@item.Number</option>
+                                }
+                            </InputSelect>
+                            @* <input type="number" class="form-control" @bind="ViewModel.Model.ClassId" /> *@
+                        </div>
+                    </div>
+                }
+                <button class="btn btn-success">Сохранить</button>
+                <span class="btn btn-secondary ms-2" @onclick="@(() => Save.InvokeAsync(null))">Отмена</span>
+            </MatDialogContent>
+        </EditForm>
+    </MatDialog>
+}
 
 @code {
     [Parameter] public EditStudentModel ViewModel { get; set; }

@@ -88,5 +88,18 @@ namespace School.Db
             var result = TeacherDbSet.FromSqlRaw(sqlSelect).FirstOrDefault();
             return result;
         }
+
+
+
+        //public void DeleteTeacher(TeacherModel teacher)
+        //{
+        //    var sql = @"DELETE FROM Teachers 
+        //        WHERE Id = @pId";
+
+        //    var parameters = new List<SqlParameter> {
+        //    new SqlParameter("@pId", teacher.Id) };
+
+        //    this.Database.ExecuteSqlRaw(sql, parameters);
+        //}
     }
 }

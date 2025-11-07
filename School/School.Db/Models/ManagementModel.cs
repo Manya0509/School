@@ -19,7 +19,7 @@ namespace School.Db.Models
         /// <summary>
         /// Должность
         /// </summary>
-        public string Position  { get; set; }
+        public string Position { get; set; }
 
         /// <summary>
         /// Имя

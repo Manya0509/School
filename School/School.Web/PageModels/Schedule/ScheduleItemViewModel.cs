@@ -1,6 +1,9 @@
-﻿using School.Web.PageModels.Teachers;
+﻿using School.Db.Models;
+using School.Web.PageModels.Cabinets;
+using School.Web.PageModels.Classes;
+using School.Web.PageModels.Teachers;
 
-namespace School.Db.Models
+namespace School.Web.PageModels.Schedule
 {
     /// <summary>
     /// Расписание занятий

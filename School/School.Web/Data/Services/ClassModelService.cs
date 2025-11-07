@@ -1,5 +1,6 @@
 ﻿using School.Db;
 using School.Db.Models;
+using School.Web.PageModels.Classes;
 using School.Web.PageModels.Students;
 
 namespace School.Web.Data.Services
@@ -26,6 +27,12 @@ namespace School.Web.Data.Services
                 return ConvertItem(classModel, classStudents);
             });
             return result;
+        }
+
+        public List<ClassModel> GetClassesModel()
+        {
+            var classes = _context.ClassDbSet.ToList();
+            return classes;
         }
 
         private ClassItemViewModel ConvertItem(ClassModel classModel, List<StudentModel> students)

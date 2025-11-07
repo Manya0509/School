@@ -9,6 +9,8 @@ namespace School.Web.Pages.Student
     {
         [Inject] 
         public StudentService StudentService { get; set; }
+        [Inject]
+        public ClassModelService ClassModelService { get; set; }
 
         protected List<StudentItemViewModel> Students { get; set; } = new();
         protected StudentItemViewModel? SelectedStudent { get; set; }
@@ -32,6 +34,7 @@ namespace School.Web.Pages.Student
             //SelectedStudent = new StudentItemViewModel(student.Item);
             EditModel = new();
             EditModel.Model = (StudentItemViewModel)student.Clone();
+            EditModel.Classes = ClassModelService.GetClassesModel();
             EditModel.IsOpenDialog = true;
             StateHasChanged();
         }
@@ -65,6 +68,7 @@ namespace School.Web.Pages.Student
         {
             //SelectedStudent = new StudentItemViewModel(new StudentModel());
             EditModel = new();
+            EditModel.Classes = ClassModelService.GetClassesModel();
             EditModel.Model = new StudentItemViewModel(new StudentModel());
             EditModel.IsOpenDialog = true;
             StateHasChanged();

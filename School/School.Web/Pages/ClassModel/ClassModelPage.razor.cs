@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using School.Db.Models;
 using School.Web.Data.Services;
+using School.Web.PageModels.Classes;
 
 namespace School.Web.Pages.ClassModel
 {
