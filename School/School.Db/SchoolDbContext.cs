@@ -17,6 +17,22 @@ namespace School.Db
         public DbSet<ClassModel> ClassDbSet { get; set; }
         public DbSet<CabinetModel> CabinetDbSet { get; set; }
 
+        public object UpdateCabinet(CabinetModel cabinet)
+        {
+            var sql = @"Update Cabinets
+                Set Number = @pNumber
+                Where Id = @pId";
+
+            var list = new List<SqlParameter> {
+                new SqlParameter("@pNumber", cabinet.Number),
+                new SqlParameter("@pId", cabinet.Id)};
+
+            this.Database.ExecuteSqlRaw(sql, list);
+            var sqlSelect = "Select * from Cabinets where Id = " + cabinet.Id;
+            var result = CabinetDbSet.FromSqlRaw(sqlSelect).FirstOrDefault();
+            return result;
+        }
+
         public object UpdateManagement(ManagementModel management)
         {
             var sql = @"Update Managements

@@ -22,7 +22,7 @@ namespace School.Web.Data.Services
 
         internal void Update(TeacherItemViewModel teacher)
         {
-            //var item = _context.TeacherDbSet.FirstOrDefault(x => x.Id == teacher.Id);
+            //var item = _context.TeacherDbSet.FirstOrDefault(t => t.Id == teacher.Id);
 
             //if (item == null)
             //{

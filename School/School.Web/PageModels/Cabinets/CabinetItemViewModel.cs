@@ -1,11 +1,12 @@
 ﻿using School.Db.Models;
+using School.Web.PageModels.Managements;
 
 namespace School.Web.PageModels.Cabinets
 {
     /// <summary>
     /// Кабинеты
     /// </summary>
-    public class CabinetItemViewModel
+    public class CabinetItemViewModel : ICloneable
     {
         private CabinetModel _item;
         
@@ -33,5 +34,12 @@ namespace School.Web.PageModels.Cabinets
 
         public string TeacherFullName { get; set; }
         public TeacherModel Teacher { get; set; }
+
+        public object Clone()
+        {
+            CabinetItemViewModel tempObject = (CabinetItemViewModel)MemberwiseClone();
+            tempObject._item = (CabinetModel)_item.Clone();
+            return tempObject;
+        }
     }
 }

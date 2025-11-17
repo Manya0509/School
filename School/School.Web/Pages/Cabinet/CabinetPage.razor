@@ -14,6 +14,8 @@
             <th>Номер кабинета</th>
             <th>Учитель</th>
             <th>Предмет</th>
+            <th>Изменение</th>
+            <th>Удаление</th>
         </tr>
     </thead>
     <tbody>
@@ -24,10 +26,26 @@
                 <td>@cabinet.Number</td>
                 <td>@cabinet.TeacherFullName</td>
                 <td>@cabinet.Teacher.SubjectName</td>
+                <td>
+                    <button class="btn btn-outline-secondary"
+                            @onclick="@(() => SelectCabinet(cabinet))">
+                        Изменить
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-outline-danger"
+                            @onclick="@(() => DeleteCabinet(cabinet))">
+                        Удалить
+                    </button>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+<button class="btn btn-primary mb-3" @onclick="AddNewCabinet">Добавить кабинет</button>
+
+<EditCabinetDialog ViewModel="EditModel" Save="SaveChanges"></EditCabinetDialog>
+<DeleteCabinetDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteCabinetDialog>
 
 @code {
 

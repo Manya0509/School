@@ -57,5 +57,37 @@ namespace School.Web.Data.Services
 
             return item;
         }
+
+        public void AddCabinet(CabinetItemViewModel cabinet)
+        {
+            var entity = cabinet.Item;
+            _context.CabinetDbSet.Add(entity);
+            _context.SaveChanges();
+        }
+
+        public void Update(CabinetItemViewModel cabinet)
+        {
+            //var item = _context.CabinetDbSet.FirstOrDefault(c => c.Id == cabinet.Id);
+
+            //if (item == null)
+            //{
+            //    item.Number = cabinet.Number;
+
+                var updateItem = _context.UpdateCabinet(cabinet.Item);
+            //}
+        }
+
+        public void DeleteCabinet(CabinetItemViewModel cabinet)
+        {
+            if (cabinet.Item != null) 
+            {
+                var entity = _context.CabinetDbSet.FirstOrDefault(c => c.Id == cabinet.Id);
+                if (entity != null)
+                {
+                    _context.CabinetDbSet.Remove(entity); 
+                    _context.SaveChanges();
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,46 @@
+﻿@using School.Web.PageModels.Cabinets
+
+@if(ViewModel?.Model != null)
+{
+    <MatDialog IsOpen="@ViewModel.IsOpenDialog" CanBeClosed="false">
+        <EditForm Model="ViewModel.Model" OnValidSubmit="@(() => { Save.InvokeAsync(ViewModel.Model); })">
+        <MatDialogTitle class="diHeader">
+        </MatDialogTitle>
+        <MatDialogContent>
+                <DataAnnotationsValidator />
+
+            @if (ViewModel.Model != null)
+            {
+                <h4>@(ViewModel.Model.Id == 0 ? "Добавление нового кабинета" : "Изменение данных кабинета")</h4>
+
+                <div class="card p-3 mt-3">
+                    <div class="form-group">
+                        <label>Номер кабинета:</label>
+                            <InputNumber @bind-Value="@ViewModel.Model.Number" Class="form-control form-control-sm col-9" id="Number"></InputNumber>
+                            <ValidationMessage For="@(() => ViewModel.Model.Number)" />
+                    </div>
+                        <div class="form-group mt-2">
+                            <label>Преподаватель: </label>
+                            <InputSelect @bind-Value="@ViewModel.Model.TeacherId" Class="form-control form-control-sm " id="TeacherId">
+                                @foreach (var teacher in ViewModel.Teachers)
+                                {
+                                    <option value="@teacher.Id">@teacher.LastName @teacher.FirstName @teacher.MiddleName</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+                    <div class="mt-3">
+                            <input class="btn btn-success" type="submit" value="Сохранить" />
+                            <span class="btn btn-secondary" @onclick="@(() => Save.InvokeAsync(null))">Отмена</span>
+                    </div>
+                </div>
+            }
+        </MatDialogContent>
+        </EditForm>
+    </MatDialog>
+}
+
+@code {
+    [Parameter] public EditCabinetModel ViewModel { get; set; }
+    [Parameter] public EventCallback<CabinetItemViewModel> Save { get; set; }
+}

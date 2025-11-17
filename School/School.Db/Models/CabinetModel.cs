@@ -7,7 +7,7 @@ namespace School.Db.Models
     /// <summary>
     /// Кабинеты
     /// </summary>
-    public class CabinetModel
+    public class CabinetModel : ICloneable
     {
         [Key]
         /// <summary>
@@ -27,6 +27,12 @@ namespace School.Db.Models
 
         [ForeignKey("TeacherId")]
         public virtual TeacherModel Teacher { get; set; }
+
+        public object Clone()
+        {
+            CabinetModel tempObject = (CabinetModel)MemberwiseClone();
+            return tempObject;
+        }
 
         //public TeacherModel Teacher { get; set; }
 
