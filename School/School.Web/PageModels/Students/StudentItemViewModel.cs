@@ -45,12 +45,15 @@ namespace School.Web.PageModels.Students
         /// <summary>
         /// Возраст
         /// </summary>
+        [Required(ErrorMessage = "Возраст обязателен")]
         [Range(6, 18, ErrorMessage = "Возраст должен быть от 6 до 18 лет")]
         public int Age { get => _item.Age; set => _item.Age = value; }
 
         /// <summary>
         /// Класс
         /// </summary>
+        [Required(ErrorMessage = "Класс обязателен")]
+        [Range(1, 11, ErrorMessage = "Класс должен быть от 1 до 11")]
         public int ClassId { get => _item.ClassId; set => _item.ClassId = value; }
 
         //public virtual ClassModel Class { get; set; }

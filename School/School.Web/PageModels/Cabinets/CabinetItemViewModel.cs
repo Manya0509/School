@@ -1,5 +1,6 @@
 ﻿using School.Db.Models;
 using School.Web.PageModels.Managements;
+using System.ComponentModel.DataAnnotations;
 
 namespace School.Web.PageModels.Cabinets
 {
@@ -25,11 +26,14 @@ namespace School.Web.PageModels.Cabinets
         /// <summary>
         /// Номер
         /// </summary>
+        [Required(ErrorMessage = "Номер кабинета обязателен")]
+        [Range(100, 500, ErrorMessage = "Номер кабинета должен быть от 100 до 500")]
         public int Number { get => _item.Number; set => _item.Number = value; }
 
         /// <summary>
         /// id предмета
         /// </summary>
+        [Range(1, int.MaxValue, ErrorMessage = "Выберите преподавателя")]
         public int? TeacherId { get => _item.TeacherId; set => _item.TeacherId = value; }
 
         public string TeacherFullName { get; set; }

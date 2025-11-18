@@ -1,5 +1,4 @@
 ﻿using School.Db.Models;
-using School.Web.PageModels.Classes;
 
 namespace School.Web.PageModels.Students
 {

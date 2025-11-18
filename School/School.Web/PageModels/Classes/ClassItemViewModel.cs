@@ -1,5 +1,6 @@
 ﻿using School.Db.Models;
 using School.Web.PageModels.Students;
+using System.ComponentModel.DataAnnotations;
 
 namespace School.Web.PageModels.Classes
 {
@@ -23,6 +24,7 @@ namespace School.Web.PageModels.Classes
         /// <summary>
         /// Номер класса
         /// </summary>
+        [Range(1, 5, ErrorMessage = "Номер класса должен быть от 1 до 5")]
         public int Number { get => _item.Number; set => _item.Number = value; }
 
         public virtual ICollection<StudentItemViewModel> Students { get; set; } = new List<StudentItemViewModel>();

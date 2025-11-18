@@ -1,5 +1,4 @@
 ﻿using School.Db.Models;
-using School.Web.PageModels.Students;
 using System.ComponentModel.DataAnnotations;
 
 namespace School.Web.PageModels.Managements
@@ -26,7 +25,7 @@ namespace School.Web.PageModels.Managements
         /// </summary>
         [Required(ErrorMessage = "Должность обязательна")]
         [StringLength(50, ErrorMessage = "Должность не должна превышать 50 символов")]
-        public string Position  { get => _item.Position ; set => _item.Position  = value; }
+        public string Position { get => _item.Position; set => _item.Position = value; }
 
         /// <summary>
         /// Имя
