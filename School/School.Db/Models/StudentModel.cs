@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alfatraining.Ams.Common.DbRepository.Interfaces;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,7 +10,7 @@ namespace School.Db.Models
     /// <summary>
     /// Ученик
     /// </summary>
-    public class StudentModel : ICloneable
+    public class StudentModel : ICloneable, IRowVersion, IEntity
     {
         [Key]
 
@@ -46,6 +47,10 @@ namespace School.Db.Models
 
         [ForeignKey("ClassId")]
         public virtual ClassModel Class { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+        public string ChangeLogJson { get; set; }
 
         public object Clone()
         {
