@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Alfatraining.Ams.Common.DbRepository.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Db.Models
@@ -7,7 +8,7 @@ namespace School.Db.Models
     /// <summary>
     /// Кабинеты
     /// </summary>
-    public class CabinetModel : ICloneable
+    public class CabinetModel : ICloneable, IRowVersion, IEntity
     {
         [Key]
         /// <summary>
@@ -28,6 +29,9 @@ namespace School.Db.Models
         [ForeignKey("TeacherId")]
         public virtual TeacherModel Teacher { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+        public string ChangeLogJson { get; set; }
         public object Clone()
         {
             CabinetModel tempObject = (CabinetModel)MemberwiseClone();

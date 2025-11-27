@@ -1,4 +1,5 @@
-﻿using School.Db;
+﻿using Alfatraining.Ams.Common.DbRepository;
+using School.Db;
 using School.Db.Models;
 using School.Web.PageModels.Classes;
 using School.Web.PageModels.Students;
@@ -15,7 +16,7 @@ namespace School.Web.Data.Services
             _context = schoolDbContext;
             _studentService = studentService;
         }
-        
+
         public List<ClassItemViewModel> GetClasses()
         {
             var classes = _context.ClassDbSet.ToList();

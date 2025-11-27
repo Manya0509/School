@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Alfatraining.Ams.Common.DbRepository.Interfaces
+﻿namespace Alfatraining.Ams.Common.DbRepository.Interfaces
 {
     public interface IRowVersion
     {
-        
+
         public byte[] RowVersion { get; set; }
     }
 }

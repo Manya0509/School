@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Alfatraining.Ams.Common.DbRepository.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Db.Models
@@ -21,6 +22,7 @@ namespace School.Db.Models
         /// Номер класса
         /// </summary>
         public int Number { get; set; }
+
 
         public virtual ICollection<StudentModel> Students { get; set; } = new List<StudentModel>();
         //public virtual ICollection<ScheduleModel> Schedules { get; set; } = new List<ScheduleModel>();
