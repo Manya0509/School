@@ -1,6 +1,8 @@
-﻿using School.Db.Models;
+﻿using Alfatraining.Ams.Common.DbRepository.Models;
+using School.Db.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace School.Web.PageModels.Students
 {
@@ -14,6 +16,11 @@ namespace School.Web.PageModels.Students
         public StudentItemViewModel(StudentModel item)
         {
             _item = item;
+
+            if (!string.IsNullOrEmpty(item.ChangeLogJson))
+            {
+                ChangeLogs = JsonSerializer.Deserialize<List<ChangeLogJson>>(item.ChangeLogJson);
+            }
         }
 
         /// <summary>
@@ -55,6 +62,8 @@ namespace School.Web.PageModels.Students
         [Required(ErrorMessage = "Класс обязателен")]
         [Range(1, 11, ErrorMessage = "Класс должен быть от 1 до 11")]
         public int ClassId { get => _item.ClassId; set => _item.ClassId = value; }
+
+        public List<ChangeLogJson> ChangeLogs {get; set;}
 
         //public virtual ClassModel Class { get; set; }
 
