@@ -1,5 +1,7 @@
-﻿using School.Db.Models;
+﻿using Alfatraining.Ams.Common.DbRepository.Models;
+using School.Db.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace School.Web.PageModels.Teachers
 {
@@ -13,6 +15,11 @@ namespace School.Web.PageModels.Teachers
         public TeacherItemViewModel(TeacherModel item)
         {
             _item = item;
+
+            if (!string.IsNullOrEmpty(item.ChangeLogJson))
+            {
+                ChangeLogs = JsonSerializer.Deserialize<List<ChangeLogJson>>(item.ChangeLogJson);
+            }
         }
 
         /// <summary>
@@ -53,6 +60,8 @@ namespace School.Web.PageModels.Teachers
         [Required(ErrorMessage = "Предмет обязателен")]
         [StringLength(50, ErrorMessage = "Предмет не должен превышать 50 символов")]
         public string SubjectName { get => _item.SubjectName; set => _item.SubjectName = value; }
+
+        public List<ChangeLogJson> ChangeLogs { get; set; }
 
         public object Clone()
         {

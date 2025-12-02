@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Alfatraining.Ams.Common.DbRepository.Models;
+using Microsoft.AspNetCore.Components;
 using School.Web.Data.Services;
 using School.Web.PageModels.Teachers;
 
@@ -86,6 +87,13 @@ namespace School.Web.Pages.Teacher
             DeleteModel.IsOpenDialog = false;
             DeleteModel.TeacherDelete = null;
         }
+        protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
+        {
+            if (changeLogJsons == null || !changeLogJsons.Any())
+                return "Нет истории изменений";
 
+            var lastChange = changeLogJsons.OrderByDescending(x => x.Date).First();
+            return $"{lastChange.Date:dd.MM.yyyy HH:mm} - {lastChange.User}: {lastChange.Operation}";
+        }
     }
 }

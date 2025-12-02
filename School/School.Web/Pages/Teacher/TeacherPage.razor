@@ -37,6 +37,12 @@
                         Удалить
                     </button>
                 </td>
+                <td>
+                    @if (teacher.ChangeLogs != null)
+                    {
+                        <i class="bi bi-info-circle" title="@GetChangeLog(teacher.ChangeLogs)"></i>
+                    }
+                </td>
             </tr>
         }
     </tbody>
