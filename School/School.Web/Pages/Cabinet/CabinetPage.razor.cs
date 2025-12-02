@@ -96,8 +96,12 @@ namespace School.Web.Pages.Cabinet
             if (changeLogJsons == null || !changeLogJsons.Any())
                 return "Нет истории изменений";
 
-            var lastChange = changeLogJsons.OrderByDescending(x => x.Date).First();
-            return $"{lastChange.Date:dd.MM.yyyy HH:mm} - {lastChange.User}: {lastChange.Operation}";
+            var changes = changeLogJsons
+                .OrderByDescending(x => x.Date)
+                .Select((change, index) =>$"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
+                .ToArray();
+
+            return string.Join("\n", changes);
         }
     }
 }
