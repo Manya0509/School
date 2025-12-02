@@ -1,5 +1,7 @@
-﻿using School.Db.Models;
+﻿using Alfatraining.Ams.Common.DbRepository.Models;
+using School.Db.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace School.Web.PageModels.Managements
 {
@@ -13,6 +15,11 @@ namespace School.Web.PageModels.Managements
         public ManagementItemViewModel(ManagementModel item)
         {
             _item = item;
+
+            if (!string.IsNullOrEmpty(item.ChangeLogJson))
+            {
+                ChangeLogs = JsonSerializer.Deserialize<List<ChangeLogJson>>(item.ChangeLogJson);
+            }
         }
 
         /// <summary>
@@ -53,6 +60,8 @@ namespace School.Web.PageModels.Managements
         /// </summary>
         [Range(20, 70, ErrorMessage = "Возраст должен быть от 20 до 70 лет")]
         public int Age { get => _item.Age; set => _item.Age = value; }
+
+        public List<ChangeLogJson> ChangeLogs { get; set; }
 
         public object Clone()
         {

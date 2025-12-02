@@ -37,6 +37,12 @@
                     Удалить
                 </button>
                 </td>
+                <td>
+                    @if (management.ChangeLogs != null)
+                    {
+                        <i class="bi bi-info-circle" title="@GetChangeLog(management.ChangeLogs)"></i>
+                    }
+                </td>
             </tr>
         }
     </tbody>
