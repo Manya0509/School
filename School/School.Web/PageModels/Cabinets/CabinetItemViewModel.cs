@@ -1,6 +1,10 @@
-﻿using School.Db.Models;
+﻿using Alfatraining.Ams.Common.DbRepository.Models;
+using School.Db.Models;
 using School.Web.PageModels.Managements;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace School.Web.PageModels.Cabinets
 {
@@ -16,7 +20,13 @@ namespace School.Web.PageModels.Cabinets
         public CabinetItemViewModel(CabinetModel item)
         {
             _item = item;
+
+            if (!string.IsNullOrEmpty(item.ChangeLogJson))
+            {
+                ChangeLogs = JsonSerializer.Deserialize<List<ChangeLogJson>>(item.ChangeLogJson);
+            }
         }
+
 
         /// <summary>
         /// id кабинета
@@ -38,6 +48,7 @@ namespace School.Web.PageModels.Cabinets
 
         public string TeacherFullName { get; set; }
         public TeacherModel Teacher { get; set; }
+        public List<ChangeLogJson> ChangeLogs { get; set; }
 
         public object Clone()
         {

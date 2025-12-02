@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Alfatraining.Ams.Common.DbRepository.Models;
+using Microsoft.AspNetCore.Components;
 using School.Web.Data.Services;
 using School.Web.PageModels.Cabinets;
 using School.Web.PageModels.Teachers;
@@ -88,6 +89,15 @@ namespace School.Web.Pages.Cabinet
                 StateHasChanged();
             }
             EditModel.IsOpenDialog = false;
+        }
+
+        protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
+        {
+            if (changeLogJsons == null || !changeLogJsons.Any())
+                return "Нет истории изменений";
+
+            var lastChange = changeLogJsons.OrderByDescending(x => x.Date).First();
+            return $"{lastChange.Date:dd.MM.yyyy HH:mm} - {lastChange.User}: {lastChange.Operation}";
         }
     }
 }
