@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Components;
 using School.Db.Models;
 using School.Web.Data.Services;
+using School.Web.PageModels;
 using School.Web.PageModels.Students;
 
 namespace School.Web.Pages.Student
 {
-    public class StudentPageViewModel : ComponentBase
+    public class StudentPageViewModel : BaseViewModel
     {
         [Inject] 
         public StudentService StudentService { get; set; }
@@ -98,17 +99,17 @@ namespace School.Web.Pages.Student
             DeleteModel.StudentDelete = null;
         }
 
-        protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
-        {
-            if (changeLogJsons == null || !changeLogJsons.Any())
-                return "Нет истории изменений";
+        //protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
+        //{
+        //    if (changeLogJsons == null || !changeLogJsons.Any())
+        //        return "Нет истории изменений";
 
-            var changes = changeLogJsons
-                .OrderByDescending(x => x.Date)
-                .Select((change, index) => $"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
-                .ToArray();
+        //    var changes = changeLogJsons
+        //        .OrderByDescending(x => x.Date)
+        //        .Select((change, index) => $"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
+        //        .ToArray();
 
-            return string.Join("\n", changes);
-        }
+        //    return string.Join("\n", changes);
+        //}
     }
 }

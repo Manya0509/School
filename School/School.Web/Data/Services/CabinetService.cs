@@ -10,12 +10,14 @@ namespace School.Web.Data.Services
         private SchoolDbContext _context;
         private readonly TeacherService _teacherService;
         private readonly EFCoreRepository<CabinetModel> _repository;
+        private readonly EFCoreRepository<TeacherModel> _repositoryTeacher;
 
         public CabinetService(TeacherService teacherService, SchoolDbContext schoolDbContext)
         {
             _teacherService = teacherService;
             _context = schoolDbContext;
-            _repository = new EFCoreRepository<CabinetModel>(_context, "user123"); 
+            _repository = new EFCoreRepository<CabinetModel>(_context, "user123");
+            _repositoryTeacher = new EFCoreRepository<TeacherModel>(_context, "user123");
         }
 
         public List<CabinetItemViewModel> GetCabinets()
@@ -29,6 +31,18 @@ namespace School.Web.Data.Services
                 return ConvertItem(cabinet, teacher);
             });
 
+            return result;
+        }
+
+        public CabinetItemViewModel GetCabinet(int id)
+        { 
+            var cabinet = _repository.FindById(id);
+            if (cabinet?.TeacherId != null)
+            {
+                var teacher = _repositoryTeacher.FindById(cabinet.TeacherId.Value);
+                return ConvertItem(cabinet, teacher);
+            }
+            var result = new CabinetItemViewModel(cabinet);
             return result;
         }
 

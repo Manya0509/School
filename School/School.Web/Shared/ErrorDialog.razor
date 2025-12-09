@@ -1,0 +1,31 @@
+﻿
+@if (IsOpen)
+{
+    <MatDialog IsOpen="@IsOpen" CanBeClosed="true" OnClose="@(() => IsOpen = false)">
+    <MatDialogTitle>
+            <h5 class="text-dark">Ошибка</h5>
+    </MatDialogTitle>
+    <MatDialogContent>
+            <div class="alert alert-light">
+                <p>@Message</p>
+                <p class= "text-dark">Обновите страницу и попробуйте снова.</p>
+            </div>
+        </MatDialogContent>
+        <MatDialogActions>
+            <button class="btn btn-secondary" @onclick="Close">Закрыть</button>
+        </MatDialogActions>
+
+        </MatDialog>
+}
+
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public string Message { get; set; } = "Произошла неизвестная ошибка";
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private void Close()
+    {
+        IsOpen = false;
+        OnClose.InvokeAsync();
+    }
+}

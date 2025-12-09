@@ -50,8 +50,9 @@
 </table>
 <button class="btn btn-primary mb-3" @onclick="AddNewCabinet">Добавить кабинет</button>
 
-<EditCabinetDialog ViewModel="EditModel" Save="SaveChanges"></EditCabinetDialog>
+<EditCabinetDialog ViewModel="EditModel" Save="SaveChanges" Reload="HandleReload"></EditCabinetDialog>
 <DeleteCabinetDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteCabinetDialog>
+<ErrorDialog IsOpen="@IsOpenErrorDialog" Message="@ErrorMessage" OnClose="@CloseErrorDialog" />
 
 @code {
 

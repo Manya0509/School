@@ -1,12 +1,14 @@
 ﻿using Alfatraining.Ams.Common.DbRepository.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using School.Web.Data.Services;
+using School.Web.PageModels;
 using School.Web.PageModels.Cabinets;
 using School.Web.PageModels.Teachers;
 
 namespace School.Web.Pages.Cabinet
 {
-    public class CabinetPageViewModel : ComponentBase
+    public class CabinetPageViewModel : BaseViewModel
     {
         [Inject] 
         public CabinetService CabinetService { get; set; }
@@ -16,92 +18,157 @@ namespace School.Web.Pages.Cabinet
         protected List<CabinetItemViewModel> Cabinets { get; set; } = new();
         protected EditCabinetModel EditModel { get; set; } = new(); 
         protected DeleteCabinetModel DeleteModel { get; set; } = new();
+
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            try
             {
-                Cabinets = CabinetService.GetCabinets();
-                Teachers = TeacherService.GetTeachers();
-                StateHasChanged();
+                if (firstRender)
+                {
+                    Cabinets = CabinetService.GetCabinets();
+                    Teachers = TeacherService.GetTeachers();
+                    StateHasChanged();
+                }
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка при загрузке данных: {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
             return base.OnAfterRenderAsync(firstRender);
         }
 
         protected void SelectCabinet(CabinetItemViewModel cabinet)
         {
-            EditModel = new EditCabinetModel
+            try
             {
-                Model = (CabinetItemViewModel)cabinet.Clone(),
-                Teachers = Teachers,
-                IsOpenDialog = true
-            };
-            StateHasChanged();
+                EditModel = new EditCabinetModel
+                {
+                    Model = (CabinetItemViewModel)cabinet.Clone(),
+                    Teachers = Teachers,
+                    IsOpenDialog = true
+                };
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка при выборе кабинета: {e?.Message} {e?.StackTrace}");
+            }
         }
 
         protected void AddNewCabinet()
         {
-            EditModel = new EditCabinetModel
+            try
             {
-                Model = new CabinetItemViewModel(new Db.Models.CabinetModel()),
-                Teachers = Teachers,
-                IsOpenDialog = true
-            };
-            StateHasChanged();
+                EditModel = new EditCabinetModel
+                {
+                    Model = new CabinetItemViewModel(new Db.Models.CabinetModel()),
+                    Teachers = Teachers,
+                    IsOpenDialog = true
+                };
+                StateHasChanged();
+            }
+            catch (Exception e) 
+            {
+                Console.WriteLine($"Ошибка при добавлении кабинета: {e?.Message} {e?.StackTrace}");
+            }
         }
 
         protected void DeleteCabinet(CabinetItemViewModel cabinet)
         {
-            if (cabinet != null)
+            try
             {
-                DeleteModel = new();
-                DeleteModel.CabinetDelete = cabinet;
-                DeleteModel.IsOpenDialog = true;
-                StateHasChanged();
+                if (cabinet != null)
+                {
+                    DeleteModel = new();
+                    DeleteModel.CabinetDelete = cabinet;
+                    DeleteModel.IsOpenDialog = true;
+                    StateHasChanged();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка при открытии диалога удаления: {e?.Message} {e?.StackTrace}");
             }
         }
 
         protected void ConfirmDelete(bool confirmed)
         {
-            if (confirmed && DeleteModel.CabinetDelete != null)
+            try
             {
-                CabinetService.DeleteCabinet(DeleteModel.CabinetDelete);
-                Cabinets = CabinetService.GetCabinets();
-                StateHasChanged(); 
+                if (confirmed && DeleteModel.CabinetDelete != null)
+                {
+                    CabinetService.DeleteCabinet(DeleteModel.CabinetDelete);
+                    Cabinets = CabinetService.GetCabinets();
+                    StateHasChanged();
+                }
             }
-            DeleteModel.IsOpenDialog = false; 
-            DeleteModel.CabinetDelete = null; 
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка при удалении кабинета: {e?.Message} {e?.StackTrace}");
+            }
+            finally
+            {
+                DeleteModel.IsOpenDialog = false;
+                DeleteModel.CabinetDelete = null;
+            }
         }
 
         protected void SaveChanges(CabinetItemViewModel item)
         {
-            if (item != null)
+            try
             {
-                if (item.Id == 0)
+                //throw new Exception("123");
+                if (item != null)
                 {
-                    CabinetService.AddCabinet(item);  
+                    if (item.Id == 0)
+                    {
+                        CabinetService.AddCabinet(item);
+                    }
+                    else
+                    {
+                        CabinetService.Update(item);
+                    }
+
+                    Cabinets = CabinetService.GetCabinets();
+                    Teachers = TeacherService.GetTeachers();
+                    StateHasChanged();
                 }
-                else
-                {
-                    CabinetService.Update(item);    
-                }
+                EditModel.IsOpenDialog = false;
+                EditModel.IsConcurrency = false;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                EditModel.IsConcurrency = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка CabinetPage /SaveChanges. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+            finally
+            {
+
+            }
+        }
+
+
+        protected void HandleReload(CabinetItemViewModel item)
+        {
+            try
+            {
                 Cabinets = CabinetService.GetCabinets();
+                Teachers = TeacherService.GetTeachers();
+                EditModel.Model = CabinetService.GetCabinet(item.Id);
+                EditModel.Teachers = Teachers.ToList();
+                EditModel.IsConcurrency = false;
                 StateHasChanged();
             }
-            EditModel.IsOpenDialog = false;
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка при обновлении данных: {e?.Message} {e?.StackTrace}");
+            }
         }
 
-        protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
-        {
-            if (changeLogJsons == null || !changeLogJsons.Any())
-                return "Нет истории изменений";
-
-            var changes = changeLogJsons
-                .OrderByDescending(x => x.Date)
-                .Select((change, index) =>$"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
-                .ToArray();
-
-            return string.Join("\n", changes);
-        }
     }
 }
