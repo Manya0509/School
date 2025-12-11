@@ -7,5 +7,6 @@ namespace School.Web.PageModels.Students
         public bool IsOpenDialog { get; set; }
         public StudentItemViewModel Model { get; set; }
         public List<ClassModel> Classes { get; set; }
+        public bool IsConcurrency { get; set; } = false;
     }
 }

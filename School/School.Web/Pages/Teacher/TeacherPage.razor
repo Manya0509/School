@@ -49,8 +49,9 @@
 </table>
 <button class="btn btn-primary mb-3" @onclick="AddNewTeacher">Добавить преподавателя</button>
 
-<EditTeacherDialog ViewModel="EditModel" Save="SaveChanges"></EditTeacherDialog>
+<EditTeacherDialog ViewModel="EditModel" Save="SaveChanges" Reload="HandleReload"></EditTeacherDialog>
 <DeleteTeacherDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteTeacherDialog>
+<ErrorDialog IsOpen="@IsOpenErrorDialog" Message="@ErrorMessage" OnClose="@CloseErrorDialog" />
 
 @code {
 

@@ -50,8 +50,9 @@
 
 <button class="btn btn-primary mb-3" @onclick="AddNewManagement">Добавить руководителя</button>
 
-<EditManagementDialog ViewModel="EditModel" Save="SaveChanges"></EditManagementDialog>
+<EditManagementDialog ViewModel="EditModel" Save="SaveChanges" Reload="HandleReload"></EditManagementDialog>
 <DeleteManagementDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteManagementDialog>
+<ErrorDialog IsOpen="@IsOpenErrorDialog" Message="@ErrorMessage" OnClose="@CloseErrorDialog" />
 
 @code {
 

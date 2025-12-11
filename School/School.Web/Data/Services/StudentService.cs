@@ -1,6 +1,7 @@
 ﻿using Alfatraining.Ams.Common.DbRepository;
 using School.Db;
 using School.Db.Models;
+using School.Web.PageModels.Managements;
 using School.Web.PageModels.Students;
 
 namespace School.Web.Data.Services
@@ -70,6 +71,13 @@ namespace School.Web.Data.Services
                     //_context.SaveChanges();
                 }
             }
+        }
+
+        public StudentItemViewModel GetStudent(int id)
+        {
+            var student = _repository.FindById(id);
+            var result = new StudentItemViewModel(student);
+            return result;
         }
     }
 }

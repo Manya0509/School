@@ -1,5 +1,6 @@
 ﻿using Alfatraining.Ams.Common.DbRepository.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using School.Db.Models;
 using School.Web.Data.Services;
 using School.Web.PageModels;
@@ -22,42 +23,62 @@ namespace School.Web.Pages.Student
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
-            {
-                Students = StudentService.GetStudents();
-                StateHasChanged();
-            }
-
+             if (firstRender)
+                {
+                    Students = StudentService.GetStudents();
+                    StateHasChanged();
+             }
             return base.OnAfterRenderAsync(firstRender);
         }
 
         protected void SelectStudent(StudentItemViewModel student)
         {
-            //SelectedStudent = new StudentItemViewModel(student.Item);
-            EditModel = new();
-            EditModel.Model = (StudentItemViewModel)student.Clone();
-            EditModel.Classes = ClassModelService.GetClassesModel();
-            EditModel.IsOpenDialog = true;
-            StateHasChanged();
+            try
+            {
+                //SelectedStudent = new StudentItemViewModel(student.Item);
+                EditModel = new();
+                EditModel.Model = (StudentItemViewModel)student.Clone();
+                EditModel.Classes = ClassModelService.GetClassesModel();
+                EditModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /SelectStudent. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void SaveChanges(StudentItemViewModel item)
         {
-            if (item != null)
+            try
             {
-                if (item.Id == 0)
+                if (item != null)
                 {
-                    StudentService.AddStudent(item);
-                }
-                else
-                {
-                    StudentService.Update(item);
-                }
+                    if (item.Id == 0)
+                    {
+                        StudentService.AddStudent(item);
+                    }
+                    else
+                    {
+                        StudentService.Update(item);
+                    }
 
-                Students = StudentService.GetStudents();
-                StateHasChanged();
+                    Students = StudentService.GetStudents();
+                    StateHasChanged();
+                }
+                EditModel.IsOpenDialog = false;
+                EditModel.IsConcurrency = false;
             }
-            EditModel.IsOpenDialog = false;
+            catch (DbUpdateConcurrencyException)
+            {
+                EditModel.IsConcurrency = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /SaveChanges. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void Update(StudentItemViewModel student)
@@ -68,35 +89,76 @@ namespace School.Web.Pages.Student
 
         protected void AddNewStudent()
         {
-            //SelectedStudent = new StudentItemViewModel(new StudentModel());
-            EditModel = new();
-            EditModel.Classes = ClassModelService.GetClassesModel();
-            EditModel.Model = new StudentItemViewModel(new StudentModel());
-            EditModel.IsOpenDialog = true;
-            StateHasChanged();
+            try
+            {
+                //SelectedStudent = new StudentItemViewModel(new StudentModel());
+                EditModel = new();
+                EditModel.Classes = ClassModelService.GetClassesModel();
+                EditModel.Model = new StudentItemViewModel(new StudentModel());
+                EditModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /AddNewStudent. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void DeleteStudent(StudentItemViewModel student)
         {
-            if (student != null)
-            { 
-                DeleteModel = new();
-                DeleteModel.StudentDelete = student;
-                DeleteModel.IsOpenDialog = true;
-                StateHasChanged();
+            try
+            {
+                if (student != null)
+                {
+                    DeleteModel = new();
+                    DeleteModel.StudentDelete = student;
+                    DeleteModel.IsOpenDialog = true;
+                    StateHasChanged();
+                }
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine($"Ошибка StudentPage /DeleteStudent. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
 
         protected void ConfirmDelete(bool confirmed)
         {
-            if (confirmed && DeleteModel.StudentDelete != null)
+            try
             {
-                StudentService.DeleteStudent(DeleteModel.StudentDelete);
+                if (confirmed && DeleteModel.StudentDelete != null)
+                {
+                    StudentService.DeleteStudent(DeleteModel.StudentDelete);
+                    Students = StudentService.GetStudents();
+                    StateHasChanged();
+                }
+                DeleteModel.IsOpenDialog = false;
+                DeleteModel.StudentDelete = null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /ConfirmDelete. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
+        public void HandleReload(StudentItemViewModel item)
+        {
+            try
+            {
                 Students = StudentService.GetStudents();
+                EditModel.Model = StudentService.GetStudent(item.Id);
+                EditModel.IsConcurrency = false;
                 StateHasChanged();
             }
-            DeleteModel.IsOpenDialog = false;
-            DeleteModel.StudentDelete = null;
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /HandleReload. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         //protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)

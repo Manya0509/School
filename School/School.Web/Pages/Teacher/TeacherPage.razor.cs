@@ -1,11 +1,13 @@
 ﻿using Alfatraining.Ams.Common.DbRepository.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using School.Web.Data.Services;
+using School.Web.PageModels;
 using School.Web.PageModels.Teachers;
 
 namespace School.Web.Pages.Teacher
 {
-    public class TeacherPageViewModel : ComponentBase
+    public class TeacherPageViewModel : BaseViewModel
     {
         [Inject]
         public TeacherService TeacherService { get; set; }
@@ -27,11 +29,19 @@ namespace School.Web.Pages.Teacher
 
         protected void SelectTeacher(TeacherItemViewModel teacher)
         {
-            //SelectedTeacher = new TeacherItemViewModel(teacher.Item);
-            EditModel = new();
-            EditModel.Model = (TeacherItemViewModel)teacher.Clone();
-            EditModel.IsOpenDialog = true;
-            StateHasChanged();
+            try
+            {
+                //SelectedTeacher = new TeacherItemViewModel(teacher.Item);
+                EditModel = new();
+                EditModel.Model = (TeacherItemViewModel)teacher.Clone();
+                EditModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /SelectTeacher. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void Update(TeacherItemViewModel teacher)
@@ -42,62 +52,117 @@ namespace School.Web.Pages.Teacher
 
         protected void SaveChanges(TeacherItemViewModel item)
         {
-            if (item != null)
+            try
             {
-                if (item.Id == 0)
+                if (item != null)
                 {
-                    TeacherService.AddTeacher(item);
+                    if (item.Id == 0)
+                    {
+                        TeacherService.AddTeacher(item);
+                    }
+                    else
+                    {
+                        TeacherService.Update(item);
+                    }
+                    Teachers = TeacherService.GetTeachers();
+                    StateHasChanged();
                 }
-                else
-                {
-                    TeacherService.Update(item);
-                }
-                Teachers = TeacherService.GetTeachers();
-                StateHasChanged();
+                EditModel.IsOpenDialog = false;
+                EditModel.IsConcurrency = false;
             }
-            EditModel.IsOpenDialog = false;
+            catch (DbUpdateConcurrencyException)
+            {
+                EditModel.IsConcurrency = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /SaveChanges. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void AddNewTeacher()
         {
-            EditModel = new();
-            EditModel.Model = new TeacherItemViewModel(new Db.Models.TeacherModel());
-            EditModel.IsOpenDialog = true;
-            StateHasChanged();
+            try
+            {
+                EditModel = new();
+                EditModel.Model = new TeacherItemViewModel(new Db.Models.TeacherModel());
+                EditModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /AddNewTeacher. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void DeleteTeacher(TeacherItemViewModel teacher)
         {
-            if (teacher != null)
+            try
             {
-                DeleteModel = new();
-                DeleteModel.TeacherDelete = teacher;
-                DeleteModel.IsOpenDialog = true;
-                StateHasChanged();
+                if (teacher != null)
+                {
+                    DeleteModel = new();
+                    DeleteModel.TeacherDelete = teacher;
+                    DeleteModel.IsOpenDialog = true;
+                    StateHasChanged();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /DeleteTeacher. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
         protected void ConfirmDelete(bool confirmed)
         {
-            if (confirmed && DeleteModel.TeacherDelete != null)
+            try
             {
-                TeacherService.DeleteTeacher(DeleteModel.TeacherDelete);
+                if (confirmed && DeleteModel.TeacherDelete != null)
+                {
+                    TeacherService.DeleteTeacher(DeleteModel.TeacherDelete);
+                    Teachers = TeacherService.GetTeachers();
+                    StateHasChanged();
+                }
+                DeleteModel.IsOpenDialog = false;
+                DeleteModel.TeacherDelete = null;
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine($"Ошибка TeacherPage /ConfirmDelete. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
+        public void HandleReload(TeacherItemViewModel item)
+        {
+            try
+            {
                 Teachers = TeacherService.GetTeachers();
+                EditModel.Model = TeacherService.GetTeacher(item.Id);
+                EditModel.IsConcurrency = false;
                 StateHasChanged();
             }
-            DeleteModel.IsOpenDialog = false;
-            DeleteModel.TeacherDelete = null;
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /HandleReload. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
-        protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
-        {
-            if (changeLogJsons == null || !changeLogJsons.Any())
-                return "Нет истории изменений";
 
-            var changes = changeLogJsons
-                .OrderByDescending(x => x.Date)
-                .Select((change, index) => $"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
-                .ToArray();
+        //protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
+        //{
+        //    if (changeLogJsons == null || !changeLogJsons.Any())
+        //        return "Нет истории изменений";
 
-            return string.Join("\n", changes);
-        }
+        //    var changes = changeLogJsons
+        //        .OrderByDescending(x => x.Date)
+        //        .Select((change, index) => $"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
+        //        .ToArray();
+
+        //    return string.Join("\n", changes);
+        //}
     }
 }

@@ -4,5 +4,6 @@
     {
         public bool IsOpenDialog { get; set; }
         public ManagementItemViewModel Model { get; set; }
+        public bool IsConcurrency { get; set; } = false;
     }
 }

@@ -21,20 +21,12 @@ namespace School.Web.Pages.Cabinet
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            try
-            {
                 if (firstRender)
                 {
                     Cabinets = CabinetService.GetCabinets();
                     Teachers = TeacherService.GetTeachers();
                     StateHasChanged();
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Ошибка при загрузке данных: {e?.Message} {e?.StackTrace}");
-                ShowErrorDialog($"Ошибка: {e.Message}");
-            }
             return base.OnAfterRenderAsync(firstRender);
         }
 
@@ -52,7 +44,8 @@ namespace School.Web.Pages.Cabinet
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка при выборе кабинета: {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка CabinetPage /SelectCabinet. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
 
@@ -70,7 +63,8 @@ namespace School.Web.Pages.Cabinet
             }
             catch (Exception e) 
             {
-                Console.WriteLine($"Ошибка при добавлении кабинета: {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка CabinetPage /AddNewCabinet. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
 
@@ -88,7 +82,8 @@ namespace School.Web.Pages.Cabinet
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка при открытии диалога удаления: {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка CabinetPage /DeleteCabinet. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
 
@@ -105,7 +100,8 @@ namespace School.Web.Pages.Cabinet
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка при удалении кабинета: {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка CabinetPage /ConfirmDelete. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
             finally
             {
@@ -166,7 +162,8 @@ namespace School.Web.Pages.Cabinet
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка при обновлении данных: {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка CabinetPage /HandleReload. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
 

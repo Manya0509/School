@@ -50,8 +50,9 @@
 
 <button class="btn btn-primary mb-3" @onclick="AddNewStudent">Добавить ученика</button>
 
-<EditStudentDialog ViewModel="EditModel" Save="SaveChanges"></EditStudentDialog>
+<EditStudentDialog ViewModel="EditModel" Save="SaveChanges" Reload="HandleReload"></EditStudentDialog>
 <DeleteStudentDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteStudentDialog>
+<ErrorDialog IsOpen="@IsOpenErrorDialog" Message="@ErrorMessage" OnClose="@CloseErrorDialog" />
 
 @code {
 

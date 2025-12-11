@@ -1,6 +1,7 @@
 ﻿using Alfatraining.Ams.Common.DbRepository;
 using School.Db;
 using School.Db.Models;
+using School.Web.PageModels.Students;
 using School.Web.PageModels.Teachers;
 
 namespace School.Web.Data.Services
@@ -26,7 +27,7 @@ namespace School.Web.Data.Services
         {
             var item = _repository.FindByIdForReload(teacher.Id);
 
-            if (item == null)
+            if (item != null)
             {
                 item.FirstName = teacher.FirstName;
                 item.MiddleName = teacher.MiddleName;
@@ -64,6 +65,13 @@ namespace School.Web.Data.Services
                     //_context.SaveChanges();
                 }
             }
+        }
+
+        public TeacherItemViewModel GetTeacher(int id)
+        {
+            var teacher = _repository.FindById(id);
+            var result = new TeacherItemViewModel(teacher);
+            return result;
         }
     }
 }

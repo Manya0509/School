@@ -1,6 +1,7 @@
 ﻿using Alfatraining.Ams.Common.DbRepository;
 using School.Db;
 using School.Db.Models;
+using School.Web.PageModels.Cabinets;
 using School.Web.PageModels.Managements;
 
 namespace School.Web.Data.Services
@@ -63,6 +64,13 @@ namespace School.Web.Data.Services
                     //_context.SaveChanges();
                 }
             }
+        }
+
+        public ManagementItemViewModel GetManagement(int id)
+        {
+            var management = _repository.FindById(id);
+            var result = new ManagementItemViewModel(management);
+            return result;
         }
     }
 }

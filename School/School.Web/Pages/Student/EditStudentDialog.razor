@@ -14,6 +14,10 @@
                     <h4>@(ViewModel.Model.Id == 0 ? "Добавление нового ученика" : "Изменение данных ученика")</h4>
 
                     <div class="card p-3 mt-3">
+                        @if(ViewModel.IsConcurrency == true)
+                        {
+                            <label class="text-danger">У вас устарели данные</label>
+                        }
                         <div class="form-group">
                             <label>Фамилия:</label>
                             <InputText @bind-Value="@ViewModel.Model.LastName" Class="form-control form-control-sm col-9" id="LastName"></InputText>
@@ -54,7 +58,14 @@
                         </div>
                     </div>
                 }
-                <button class="btn btn-success">Сохранить</button>
+                @if (ViewModel.IsConcurrency == true)
+                {
+                    <span class="btn btn-danger" @onclick="@(() => Reload.InvokeAsync(ViewModel.Model))">Обновить</span>
+                }
+                else
+                {
+                    <input class="btn btn-success" type="submit" value="Сохранить" />
+                }
                 <span class="btn btn-secondary ms-2" @onclick="@(() => Save.InvokeAsync(null))">Отмена</span>
             </MatDialogContent>
         </EditForm>
@@ -64,5 +75,6 @@
 @code {
     [Parameter] public EditStudentModel ViewModel { get; set; }
     [Parameter] public EventCallback<StudentItemViewModel> Save { get; set; }
-    
+    [Parameter] public EventCallback<StudentItemViewModel> Reload { get; set; }
+
 }

@@ -1,12 +1,14 @@
 ﻿using Alfatraining.Ams.Common.DbRepository.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using School.Web.Data.Services;
+using School.Web.PageModels;
 using School.Web.PageModels.Managements;
 using School.Web.PageModels.Teachers;
 
 namespace School.Web.Pages.Management
 {
-    public class ManagementPageViewModel : ComponentBase
+    public class ManagementPageViewModel : BaseViewModel
     {
         [Inject] ManagementService ManagementService { get; set; }
         protected List<ManagementItemViewModel> Managements { get; set; } = new();
@@ -15,12 +17,11 @@ namespace School.Web.Pages.Management
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
-            {
-                Managements = ManagementService.GetManagements();
-                StateHasChanged();
-            }
-
+                if (firstRender)
+                {
+                    Managements = ManagementService.GetManagements();
+                    StateHasChanged();
+                }
             return base.OnAfterRenderAsync(firstRender);
         }
 
@@ -32,72 +33,135 @@ namespace School.Web.Pages.Management
 
         protected void AddNewManagement()
         {
-            EditModel = new();
-            EditModel.Model = new ManagementItemViewModel(new Db.Models.ManagementModel());
-            EditModel.IsOpenDialog = true;
-            StateHasChanged();
+            try
+            {
+                EditModel = new();
+                EditModel.Model = new ManagementItemViewModel(new Db.Models.ManagementModel());
+                EditModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /AddNewManagement. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void SelectManagement(ManagementItemViewModel management)
         {
-            EditModel = new();
-            EditModel.Model = (ManagementItemViewModel)management.Clone();
-            EditModel.IsOpenDialog = true;
-            StateHasChanged();
+            try
+            {
+                EditModel = new();
+                EditModel.Model = (ManagementItemViewModel)management.Clone();
+                EditModel.IsOpenDialog = true;
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /SelectManagement. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void SaveChanges(ManagementItemViewModel item)
         {
-            if (item != null)
+            try
             {
-                if (item.Id == 0)
+                //throw new Exception("123");
+                if (item != null)
                 {
-                    ManagementService.AddManagement(item);
+                    if (item.Id == 0)
+                    {
+                        ManagementService.AddManagement(item);
+                    }
+                    else
+                    {
+                        ManagementService.Update(item);
+                    }
+                    Managements = ManagementService.GetManagements();
+                    StateHasChanged();
                 }
-                else
-                {
-                    ManagementService.Update(item);     
-                }
-                Managements = ManagementService.GetManagements();
-                StateHasChanged();
+                EditModel.IsOpenDialog = false;
+                EditModel.IsConcurrency = false;
             }
-            EditModel.IsOpenDialog = false;  
+            catch (DbUpdateConcurrencyException)
+            {
+                EditModel.IsConcurrency = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /SaveChanges. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+
         }
 
         protected void DeleteManagement(ManagementItemViewModel management)
         {
-            if (management != null)
-            { 
-                DeleteModel = new();
-                DeleteModel.ManagementDelete = management;
-                DeleteModel.IsOpenDialog = true;
-                StateHasChanged();
+            try
+            {
+                if (management != null)
+                {
+                    DeleteModel = new();
+                    DeleteModel.ManagementDelete = management;
+                    DeleteModel.IsOpenDialog = true;
+                    StateHasChanged();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /DeleteManagement. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
 
         protected void ConfirmDelete(bool confirmed)
         {
-            if (confirmed && DeleteModel.ManagementDelete != null)
+            try
             {
-                ManagementService.DeleteManagement(DeleteModel.ManagementDelete);
+                if (confirmed && DeleteModel.ManagementDelete != null)
+                {
+                    ManagementService.DeleteManagement(DeleteModel.ManagementDelete);
+                    Managements = ManagementService.GetManagements();
+                    StateHasChanged();
+                }
+                DeleteModel.IsOpenDialog = false;
+                DeleteModel.ManagementDelete = null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /ConfirmDelete. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
+        protected void HandleReload(ManagementItemViewModel item)
+        {
+            try
+            {
                 Managements = ManagementService.GetManagements();
+                EditModel.Model = ManagementService.GetManagement(item.Id);
+                EditModel.IsConcurrency = false;
                 StateHasChanged();
             }
-            DeleteModel.IsOpenDialog = false;
-            DeleteModel.ManagementDelete = null;
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /HandleReload. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
-        protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
-        {
-            if (changeLogJsons == null || !changeLogJsons.Any())
-                return "Нет истории изменений";
+        //protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
+        //{
+        //    if (changeLogJsons == null || !changeLogJsons.Any())
+        //        return "Нет истории изменений";
 
-            var changes = changeLogJsons
-                .OrderByDescending(x => x.Date)
-                .Select((change, index) => $"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
-                .ToArray();
+        //    var changes = changeLogJsons
+        //        .OrderByDescending(x => x.Date)
+        //        .Select((change, index) => $"{change.Date:dd.MM.yy HH:mm} - {change.User}: {change.Operation}")
+        //        .ToArray();
 
-            return string.Join("\n", changes);
-        }
+        //    return string.Join("\n", changes);
+        //}
     }
 }
