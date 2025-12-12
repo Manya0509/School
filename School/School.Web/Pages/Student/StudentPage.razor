@@ -1,6 +1,32 @@
 ﻿@page "/Student"
 @inherits StudentPageViewModel
-<h3>Ученики</h3>  
+<h3>Ученики</h3>
+
+
+<div class="">
+    @if (FilterStudent != null)
+    {
+        <EditForm Model="FilterStudent">
+            <InputText @bind-Value="@FilterStudent.LastName" Class="form-control form-control-sm col-9" id="LastName" title="Фамилия"></InputText>
+            <InputText @bind-Value="@FilterStudent.FirstName" Class="form-control form-control-sm col-9" id="FirstName" title="Имя"></InputText>
+            <InputSelect @bind-Value="@FilterStudent.ClassId" Class="form-control form-control-sm " id="ClassId">
+                <option value="0">--</option>
+                @if(FilterStudent.Classes != null)
+                {
+                @foreach (var item in FilterStudent.Classes)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+                }
+            </InputSelect>
+            <button class="btn btn-outline-danger"
+                        @onclick="@(() => Search())">
+                    Поиск
+                    </button>
+        </EditForm>
+    }
+</div>
+
 
 <table class="table table-striped">
     <thead>
@@ -33,7 +59,7 @@
                 </td>
                 <td>
                     <button class="btn btn-outline-danger"
-                        @onclick="@(() => DeleteStudent(student))">
+                            @onclick="@(() => DeleteStudent(student))">
                         Удалить
                     </button>
                 </td>
@@ -43,7 +69,7 @@
                         <i class="bi bi-info-circle" title="@GetChangeLog(student.ChangeLogs)"></i>
                     }
                 </td>
-               </tr>
+            </tr>
         }
     </tbody>
 </table>

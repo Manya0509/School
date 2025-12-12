@@ -1,21 +1,20 @@
-﻿
-@if (IsOpen)
+﻿@if (IsOpen)
 {
     <MatDialog IsOpen="@IsOpen" CanBeClosed="true" OnClose="@(() => IsOpen = false)">
-    <MatDialogTitle>
+        <MatDialogTitle>
             <h5 class="text-dark">Ошибка</h5>
-    </MatDialogTitle>
-    <MatDialogContent>
+        </MatDialogTitle>
+        <MatDialogContent>
             <div class="alert alert-light">
                 <p>@Message</p>
-                <p class= "text-dark">Обновите страницу и попробуйте снова.</p>
+                <p class="text-dark">Обновите страницу и попробуйте снова.</p>
             </div>
         </MatDialogContent>
         <MatDialogActions>
             <button class="btn btn-secondary" @onclick="Close">Закрыть</button>
         </MatDialogActions>
 
-        </MatDialog>
+    </MatDialog>
 }
 
 @code {

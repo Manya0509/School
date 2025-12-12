@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using School.Db.Models;
+using School.Db.Views;
 
 namespace School.Db
 {
@@ -11,11 +12,18 @@ namespace School.Db
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<FilterModel>(eb => { eb.HasNoKey(); });
+        }
+
         public DbSet<StudentModel> StudentDbSet { get; set; }
         public DbSet<TeacherModel> TeacherDbSet { get; set; }
         public DbSet<ManagementModel> ManagementDbSet { get; set; }
         public DbSet<ClassModel> ClassDbSet { get; set; }
         public DbSet<CabinetModel> CabinetDbSet { get; set; }
+        public DbSet<FilterModel> FilterModels { get; set; }
 
         public object UpdateCabinet(CabinetModel cabinet)
         {

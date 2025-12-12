@@ -1,6 +1,7 @@
 ﻿using Alfatraining.Ams.Common.DbRepository;
 using School.Db;
 using School.Db.Models;
+using School.Db.Views;
 using School.Web.PageModels.Classes;
 using School.Web.PageModels.Students;
 
@@ -48,6 +49,12 @@ namespace School.Web.Data.Services
             }
 
             return item;
+        }
+
+        public List<FilterModel> GetFilterModels()
+        { 
+            var list = from s in _context.ClassDbSet select new FilterModel(){Id = s.Id, Name = s.Number.ToString()};
+            return list.ToList();
         }
     }
     

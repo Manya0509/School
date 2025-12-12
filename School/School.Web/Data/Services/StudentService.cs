@@ -19,7 +19,7 @@ namespace School.Web.Data.Services
 
         public List<StudentItemViewModel> GetStudents()
         {
-            var list = _repository.Get().ToList(); /*_context.StudentDbSet.ToList();*/ 
+            var list = _repository.Get().ToList(); /*_context.StudentDbSet.ToList();*/
             return list.ConvertAll(x => ConvertItem(x));
 
             //return new List<StudentModel>
@@ -65,7 +65,7 @@ namespace School.Web.Data.Services
             {
                 var entity = _repository.FindByIdForReload(student.Id); /*_context.StudentDbSet.FirstOrDefault(s => s.Id == student.Id);*/
                 if (entity != null)
-                { 
+                {
                     _repository.Remove(entity);
                     //_context.StudentDbSet.Remove(entity);
                     //_context.SaveChanges();
@@ -78,6 +78,20 @@ namespace School.Web.Data.Services
             var student = _repository.FindById(id);
             var result = new StudentItemViewModel(student);
             return result;
+        }
+
+        public List<StudentItemViewModel> GetStudents(string firstName, string lastName, int classId)
+        {
+            //var list = _repository.GetQueryable().Where(x =>
+            //x.FirstName.ToLower().Contains(firstName.ToLower())&& 
+            //x.LastName.ToLower().Contains(lastName.ToLower())&&(classId == 0 || x.ClassId == classId)).ToList();  
+            //return list.ConvertAll(x => ConvertItem(x));
+
+            var list = _repository.GetQueryable().Where(x =>
+                (string.IsNullOrEmpty(firstName) || x.FirstName.ToLower().Contains(firstName.ToLower())) &&
+                (string.IsNullOrEmpty(lastName) || x.LastName.ToLower().Contains(lastName.ToLower())) &&
+                (classId == 0 || x.ClassId == classId)).ToList();
+            return list.ConvertAll(x => ConvertItem(x));
         }
     }
 }

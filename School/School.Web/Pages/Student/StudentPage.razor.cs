@@ -20,15 +20,36 @@ namespace School.Web.Pages.Student
 
         protected EditStudentModel EditModel { get; set; } = new();
         protected DeleteStudentModel DeleteModel { get; set; } = new();
+        protected FilterStudentModel FilterStudent { get; set; }
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
              if (firstRender)
                 {
+                InitFilter();
                     Students = StudentService.GetStudents();
                     StateHasChanged();
              }
             return base.OnAfterRenderAsync(firstRender);
+        }
+
+        public void InitFilter()
+        {
+            try
+            {
+                FilterStudent = new();
+                FilterStudent.Classes = ClassModelService.GetFilterModels();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /InitFilter. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
+        public void Search()
+        {
+            Students = StudentService.GetStudents(FilterStudent.FirstName, FilterStudent.LastName, FilterStudent.ClassId);
         }
 
         protected void SelectStudent(StudentItemViewModel student)
