@@ -52,8 +52,13 @@ namespace School.Web.Data.Services
         }
 
         public List<FilterModel> GetFilterModels()
-        { 
-            var list = from s in _context.ClassDbSet select new FilterModel(){Id = s.Id, Name = s.Number.ToString()};
+        {
+            var list = from s in _context.ClassDbSet
+                       select new FilterModel()
+                       {
+                           Id = s.Id,
+                           Name = s.Number.ToString()
+                       };
             return list.ToList();
         }
     }

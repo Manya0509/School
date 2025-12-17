@@ -80,16 +80,11 @@ namespace School.Web.Data.Services
             return result;
         }
 
-        public List<StudentItemViewModel> GetStudents(string firstName, string lastName, int classId)
+        public List<StudentItemViewModel> GetStudentsFilter(string firstName, string lastName, int classId)
         {
-            //var list = _repository.GetQueryable().Where(x =>
-            //x.FirstName.ToLower().Contains(firstName.ToLower())&& 
-            //x.LastName.ToLower().Contains(lastName.ToLower())&&(classId == 0 || x.ClassId == classId)).ToList();  
-            //return list.ConvertAll(x => ConvertItem(x));
-
             var list = _repository.GetQueryable().Where(x =>
-                (string.IsNullOrEmpty(firstName) || x.FirstName.ToLower().Contains(firstName.ToLower())) &&
-                (string.IsNullOrEmpty(lastName) || x.LastName.ToLower().Contains(lastName.ToLower())) &&
+                (string.IsNullOrEmpty(firstName) || x.FirstName.ToLower().StartsWith(firstName.ToLower())) &&
+                (string.IsNullOrEmpty(lastName) || x.LastName.ToLower().StartsWith(lastName.ToLower())) &&
                 (classId == 0 || x.ClassId == classId)).ToList();
             return list.ConvertAll(x => ConvertItem(x));
         }

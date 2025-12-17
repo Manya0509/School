@@ -22,34 +22,57 @@ namespace School.Web.Pages.Student
         protected DeleteStudentModel DeleteModel { get; set; } = new();
         protected FilterStudentModel FilterStudent { get; set; }
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        protected bool ShowFilters { get; set; } = false;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-             if (firstRender)
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                try
                 {
-                InitFilter();
+                    FilterStudent = new FilterStudentModel();
+                    FilterStudent.Classes = ClassModelService.GetFilterModels();
+
                     Students = StudentService.GetStudents();
                     StateHasChanged();
-             }
-            return base.OnAfterRenderAsync(firstRender);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Ошибка инициализации: {e.Message}");
+                    ShowErrorDialog($"Ошибка: {e.Message}");
+                }
+            }
         }
 
-        public void InitFilter()
+        protected void ToggleFilters()
         {
-            try
-            {
-                FilterStudent = new();
-                FilterStudent.Classes = ClassModelService.GetFilterModels();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Ошибка StudentPage /InitFilter. {e?.Message} {e?.StackTrace}");
-                ShowErrorDialog($"Ошибка: {e.Message}");
-            }
+            ShowFilters = !ShowFilters;
+            StateHasChanged();
         }
 
         public void Search()
         {
-            Students = StudentService.GetStudents(FilterStudent.FirstName, FilterStudent.LastName, FilterStudent.ClassId);
+            Students = StudentService.GetStudentsFilter(FilterStudent.FirstName, FilterStudent.LastName, FilterStudent.ClassId);
+        }
+
+        public void ResetFilter()
+        {
+            try
+            {
+                FilterStudent.FirstName = "";
+                FilterStudent.LastName = "";
+                FilterStudent.ClassId = 0;
+
+                Students = StudentService.GetStudents();
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка сброса фильтра: {e.Message}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void SelectStudent(StudentItemViewModel student)
@@ -100,12 +123,6 @@ namespace School.Web.Pages.Student
                 Console.WriteLine($"Ошибка StudentPage /SaveChanges. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
-        }
-
-        protected void Update(StudentItemViewModel student)
-        {
-            //student.MiddleName = student.;
-            //StudentService.Update(student);
         }
 
         protected void AddNewStudent()
