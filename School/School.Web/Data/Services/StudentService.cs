@@ -83,8 +83,10 @@ namespace School.Web.Data.Services
         public List<StudentItemViewModel> GetStudentsFilter(string firstName, string lastName, int classId)
         {
             var list = _repository.GetQueryable().Where(x =>
-                (string.IsNullOrEmpty(firstName) || x.FirstName.ToLower().StartsWith(firstName.ToLower())) &&
-                (string.IsNullOrEmpty(lastName) || x.LastName.ToLower().StartsWith(lastName.ToLower())) &&
+                (string.IsNullOrEmpty(firstName) || 
+                x.FirstName.ToLower().StartsWith(firstName.ToLower())) &&
+                (string.IsNullOrEmpty(lastName) || 
+                x.LastName.ToLower().StartsWith(lastName.ToLower())) &&
                 (classId == 0 || x.ClassId == classId)).ToList();
             return list.ConvertAll(x => ConvertItem(x));
         }

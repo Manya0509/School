@@ -73,6 +73,18 @@ namespace School.Web.Data.Services
             var result = new TeacherItemViewModel(teacher);
             return result;
         }
+
+        public List<TeacherItemViewModel> GetTeachersFilter(string firstName, string lastName, string subjectName)
+        {
+            var list = _repository.GetQueryable().Where(x =>
+                (string.IsNullOrEmpty(firstName) ||
+                x.FirstName.ToLower().StartsWith(firstName.ToLower())) &&
+                (string.IsNullOrEmpty(lastName) ||
+                x.LastName.ToLower().StartsWith(lastName.ToLower())) &&
+                (string.IsNullOrEmpty(subjectName) ||
+                x.SubjectName.ToLower().StartsWith(subjectName.ToLower()))).ToList();
+            return list.ConvertAll(x => ConvertItem(x));
+        }
     }
 }
 

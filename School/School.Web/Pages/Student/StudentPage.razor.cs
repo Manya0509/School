@@ -40,7 +40,7 @@ namespace School.Web.Pages.Student
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Ошибка инициализации: {e.Message}");
+                    Console.WriteLine($"Ошибка StudentPage /OnAfterRenderAsync. {e?.Message} {e?.StackTrace}");
                     ShowErrorDialog($"Ошибка: {e.Message}");
                 }
             }
@@ -54,7 +54,12 @@ namespace School.Web.Pages.Student
 
         public void Search()
         {
-            Students = StudentService.GetStudentsFilter(FilterStudent.FirstName, FilterStudent.LastName, FilterStudent.ClassId);
+            Students = StudentService.GetStudentsFilter(
+                FilterStudent.FirstName, 
+                FilterStudent.LastName, 
+                FilterStudent.ClassId
+            );
+            StateHasChanged();
         }
 
         public void ResetFilter()
@@ -70,7 +75,7 @@ namespace School.Web.Pages.Student
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка сброса фильтра: {e.Message}");
+                Console.WriteLine($"Ошибка StudentPage /ResetFilter. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }

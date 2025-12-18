@@ -15,16 +15,62 @@ namespace School.Web.Pages.Teacher
         protected TeacherItemViewModel? SelectedTeacher { get; set; }
         protected EditTeacherModel EditModel { get; set; } = new();
         protected DeleteTeacherModel DeleteModel { get; set; } = new();
+        protected FilterTeacherModel FilterTeacher { get; set; }
+        protected bool ShowFilters { get; set; } = false;
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             if (firstRender)
             {
+                try
+                {
+                    FilterTeacher = new FilterTeacherModel();
+
+                    Teachers = TeacherService.GetTeachers();
+                    StateHasChanged();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Ошибка TeacherPage /OnAfterRenderAsync. {e?.Message} {e?.StackTrace}");
+                    ShowErrorDialog($"Ошибка: {e.Message}");
+                }
+            }
+        }
+
+        protected void ToggleFilters()
+        { 
+            ShowFilters = !ShowFilters;
+            StateHasChanged();
+        }
+
+        public void Search()
+        {
+            Teachers = TeacherService.GetTeachersFilter(
+                FilterTeacher.FirstName,
+                FilterTeacher.LastName,
+                FilterTeacher.SubjectName
+                );
+            StateHasChanged();
+        }
+
+        public void ResetFilter()
+        {
+            try
+            {
+                FilterTeacher.FirstName = "";
+                FilterTeacher.LastName = "";
+                FilterTeacher.SubjectName = "";
+
                 Teachers = TeacherService.GetTeachers();
                 StateHasChanged();
             }
-
-            return base.OnAfterRenderAsync(firstRender);
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /ResetFilter. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         protected void SelectTeacher(TeacherItemViewModel teacher)
