@@ -14,15 +14,60 @@ namespace School.Web.Pages.Management
         protected List<ManagementItemViewModel> Managements { get; set; } = new();
         protected EditManagementModel EditModel { get; set; } = new();
         protected DeleteManagementModel DeleteModel { get; set; } = new();
+        protected bool ShowFilters { get; set; } = false;
+        protected FilterManagementModel FilterManagement { get; set; }
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-                if (firstRender)
+            await base.OnAfterRenderAsync(firstRender);
+            if (firstRender)
+            {
+                try
                 {
+                    FilterManagement = new FilterManagementModel();
                     Managements = ManagementService.GetManagements();
                     StateHasChanged();
                 }
-            return base.OnAfterRenderAsync(firstRender);
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Ошибка ManagementPage /OnAfterRenderAsync. {e?.Message} {e?.StackTrace}");
+                    ShowErrorDialog($"Ошибка: {e.Message}");
+                }
+            }
+        }
+
+        protected void ToggleFilters()
+        { 
+            ShowFilters = !ShowFilters;
+            StateHasChanged();
+        }
+
+        public void Search()
+        { 
+            Managements = ManagementService.GetManagementsFilter(
+                FilterManagement.LastName,
+                FilterManagement.FirstName,
+                FilterManagement.Position
+                );
+            StateHasChanged();
+        }
+
+        public void ResetFilter()
+        {
+            try
+            {
+                FilterManagement.LastName = "";
+                FilterManagement.FirstName = "";
+                FilterManagement.Position = "";
+
+                Managements = ManagementService.GetManagements();
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /ResetFilter. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
         }
 
         //protected void Update(ManagementItemViewModel management)

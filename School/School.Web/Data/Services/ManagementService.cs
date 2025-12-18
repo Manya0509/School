@@ -72,5 +72,17 @@ namespace School.Web.Data.Services
             var result = new ManagementItemViewModel(management);
             return result;
         }
+
+        public List<ManagementItemViewModel> GetManagementsFilter(string lastName, string firstName, string position)
+        {
+            var list = _repository.GetQueryable().Where(x =>
+                (string.IsNullOrEmpty(firstName) ||
+                x.FirstName.ToLower().StartsWith(firstName.ToLower())) &&
+                (string.IsNullOrEmpty(lastName) ||
+                x.LastName.ToLower().StartsWith(lastName.ToLower())) &&
+                (string.IsNullOrEmpty(position) ||
+                x.Position.ToLower().StartsWith(position.ToLower()))).ToList();
+            return list.ConvertAll(x => ConvertItem(x));
+        }
     }
 }
