@@ -10,23 +10,23 @@ namespace School.Web.Pages.Cabinet
 {
     public class CabinetPageViewModel : BaseViewModel
     {
-        [Inject] 
+        [Inject]
         public CabinetService CabinetService { get; set; }
         [Inject]
         public TeacherService TeacherService { get; set; }
         protected List<TeacherItemViewModel> Teachers { get; set; } = new();
         protected List<CabinetItemViewModel> Cabinets { get; set; } = new();
-        protected EditCabinetModel EditModel { get; set; } = new(); 
+        protected EditCabinetModel EditModel { get; set; } = new();
         protected DeleteCabinetModel DeleteModel { get; set; } = new();
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
-                if (firstRender)
-                {
-                    Cabinets = CabinetService.GetCabinets();
-                    Teachers = TeacherService.GetTeachers();
-                    StateHasChanged();
-                }
+            if (firstRender)
+            {
+                Cabinets = CabinetService.GetCabinets();
+                Teachers = TeacherService.GetTeachers();
+                StateHasChanged();
+            }
             return base.OnAfterRenderAsync(firstRender);
         }
 
@@ -61,7 +61,7 @@ namespace School.Web.Pages.Cabinet
                 };
                 StateHasChanged();
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Console.WriteLine($"Ошибка CabinetPage /AddNewCabinet. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");

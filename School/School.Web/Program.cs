@@ -26,6 +26,16 @@ builder.Services.AddScoped<ManagementService>();
 builder.Services.AddScoped<TeacherService>();
 builder.Services.AddScoped<ScheduleService>();
 
+builder.Services.AddMatToaster(config =>
+{
+    config.Position = MatToastPosition.TopRight;
+    config.PreventDuplicates = false;
+    config.NewestOnTop = true;
+    config.ShowCloseButton = true;
+    config.MaximumOpacity = 95;
+    config.VisibleStateDuration = 3000;
+});
+
 builder.Services.AddMatBlazor();
 
 var app = builder.Build();

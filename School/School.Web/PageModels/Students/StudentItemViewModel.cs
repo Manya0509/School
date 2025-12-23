@@ -62,7 +62,7 @@ namespace School.Web.PageModels.Students
         [Required(ErrorMessage = "Класс обязателен")]
         [Range(1, 11, ErrorMessage = "Класс должен быть от 1 до 11")]
         public int ClassId { get => _item.ClassId; set => _item.ClassId = value; }
-
+        public bool IsDeleted { get => _item.IsDeleted; set => _item.IsDeleted = value; }
         public List<ChangeLogJson> ChangeLogs {get; set;}
 
         //public virtual ClassModel Class { get; set; }

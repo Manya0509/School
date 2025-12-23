@@ -51,6 +51,7 @@ namespace School.Db.Models
         [Timestamp]
         public byte[] RowVersion { get; set; }
         public string ChangeLogJson { get; set; }
+        public bool IsDeleted { get; set; }
 
         public object Clone()
         {

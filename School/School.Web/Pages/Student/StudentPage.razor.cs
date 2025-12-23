@@ -10,7 +10,7 @@ namespace School.Web.Pages.Student
 {
     public class StudentPageViewModel : BaseViewModel
     {
-        [Inject] 
+        [Inject]
         public StudentService StudentService { get; set; }
         [Inject]
         public ClassModelService ClassModelService { get; set; }
@@ -32,16 +32,31 @@ namespace School.Web.Pages.Student
             {
                 try
                 {
+                    IsShowSpiner = true;
+                    await InvokeAsync(StateHasChanged);
+                    await Task.Delay(1);
                     FilterStudent = new FilterStudentModel();
                     FilterStudent.Classes = ClassModelService.GetFilterModels();
 
                     Students = StudentService.GetStudents();
-                    StateHasChanged();
+
+                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"Ошибка StudentPage /OnAfterRenderAsync. {e?.Message} {e?.StackTrace}");
                     ShowErrorDialog($"Ошибка: {e.Message}");
+                }
+                finally
+                {
+                    IsShowSpiner = false;
+                    await InvokeAsync(StateHasChanged);
                 }
             }
         }
@@ -52,31 +67,57 @@ namespace School.Web.Pages.Student
             StateHasChanged();
         }
 
-        public void Search()
-        {
-            Students = StudentService.GetStudentsFilter(
-                FilterStudent.FirstName, 
-                FilterStudent.LastName, 
-                FilterStudent.ClassId
-            );
-            StateHasChanged();
-        }
 
-        public void ResetFilter()
+        public async Task Search()
         {
             try
             {
+                IsShowSpiner = true;
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1); 
+
+                Students = StudentService.GetStudentsFilter(
+                    FilterStudent.FirstName,
+                    FilterStudent.LastName,
+                    FilterStudent.ClassId
+                );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /Search. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка при поиске: {e.Message}");
+            }
+            finally
+            {
+                IsShowSpiner = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+
+
+        public async Task ResetFilter()
+        {
+            try
+            {
+                IsShowSpiner = true;
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+
                 FilterStudent.FirstName = "";
                 FilterStudent.LastName = "";
                 FilterStudent.ClassId = 0;
 
                 Students = StudentService.GetStudents();
-                StateHasChanged();
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Ошибка StudentPage /ResetFilter. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+            finally
+            {
+                IsShowSpiner = false;
+                await InvokeAsync(StateHasChanged);
             }
         }
 
@@ -90,6 +131,14 @@ namespace School.Web.Pages.Student
                 EditModel.Classes = ClassModelService.GetClassesModel();
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
+
+                Toaster.Add("Студент обновлен.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
@@ -140,6 +189,14 @@ namespace School.Web.Pages.Student
                 EditModel.Model = new StudentItemViewModel(new StudentModel());
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
+
+                Toaster.Add("Создан новый студент.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
@@ -180,6 +237,14 @@ namespace School.Web.Pages.Student
                 }
                 DeleteModel.IsOpenDialog = false;
                 DeleteModel.StudentDelete = null;
+
+                Toaster.Add("Студент был удален.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 75000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {

@@ -5,8 +5,10 @@ namespace School.Web.PageModels
 {
     public class BaseViewModel : ComponentBase
     {
+        [Inject] protected MatBlazor.IMatToaster Toaster { get; set; }
         protected bool IsOpenErrorDialog { get; set; }
         protected string ErrorMessage { get; set; }
+        protected bool IsShowSpiner { get; set; } = false;
         protected void ShowErrorDialog(string message)
         {
             ErrorMessage = message;

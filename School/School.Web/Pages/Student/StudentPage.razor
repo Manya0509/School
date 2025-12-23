@@ -2,12 +2,10 @@
 @inherits StudentPageViewModel
 <h3>Ученики</h3>
 
-<button class="btn btn-outline-primary btn-sm mb-3"
+<button class="btn btn-outline-primary btn-sm mb-3 bi bi-search"
         @onclick="ToggleFilters">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-    </svg>
 </button>
+
 
 @if (ShowFilters)
 {
@@ -47,6 +45,8 @@
     </div>
 }
 
+<CircleLoader IsShowSpiner="IsShowSpiner"></CircleLoader>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -58,6 +58,7 @@
             <th>Класс</th>
             <th>Изменение</th>
             <th>Удаление</th>
+            <th>История</th>
         </tr>
     </thead>
     <tbody>
@@ -77,10 +78,18 @@
                     </button>
                 </td>
                 <td>
-                    <button class="btn btn-outline-danger"
-                            @onclick="@(() => DeleteStudent(student))">
-                        Удалить
-                    </button>
+                    @if (student.IsDeleted == false)
+                    {
+                        <button class="bi bi-arrow-clockwise"
+                        @onclick="@(() => DeleteStudent(student))">
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="bi bi-trash3"
+                                @onclick="@(() => DeleteStudent(student))">
+                        </button>
+                    }
                 </td>
                 <td>
                     @if (student.ChangeLogs != null)
