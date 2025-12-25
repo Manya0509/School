@@ -24,14 +24,29 @@ namespace School.Web.Pages.Management
             {
                 try
                 {
+                    IsShowSpiner = true;
+                    await InvokeAsync(StateHasChanged);
+                    await Task.Delay(1);
                     FilterManagement = new FilterManagementModel();
                     Managements = ManagementService.GetManagements();
-                    StateHasChanged();
+
+                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"Ошибка ManagementPage /OnAfterRenderAsync. {e?.Message} {e?.StackTrace}");
                     ShowErrorDialog($"Ошибка: {e.Message}");
+                }
+                finally
+                {
+                    IsShowSpiner = false;
+                    await InvokeAsync(StateHasChanged);
                 }
             }
         }
@@ -42,14 +57,30 @@ namespace School.Web.Pages.Management
             StateHasChanged();
         }
 
-        public void Search()
-        { 
+        public async Task Search()
+        {
+            try
+            {
+                IsShowSpiner = true;
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+
             Managements = ManagementService.GetManagementsFilter(
                 FilterManagement.LastName,
                 FilterManagement.FirstName,
                 FilterManagement.Position
                 );
-            StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /Search. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка при поиске: {e.Message}");
+            }
+            finally
+            {
+                IsShowSpiner = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
 
         public void ResetFilter()
@@ -84,6 +115,14 @@ namespace School.Web.Pages.Management
                 EditModel.Model = new ManagementItemViewModel(new Db.Models.ManagementModel());
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
+
+                Toaster.Add("Создан новый руководитель.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
@@ -100,6 +139,14 @@ namespace School.Web.Pages.Management
                 EditModel.Model = (ManagementItemViewModel)management.Clone();
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
+
+                Toaster.Add("Руководитель обновлен.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
@@ -172,6 +219,14 @@ namespace School.Web.Pages.Management
                 }
                 DeleteModel.IsOpenDialog = false;
                 DeleteModel.ManagementDelete = null;
+
+                Toaster.Add("Руководитель был удален.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 75000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
