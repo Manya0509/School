@@ -14,14 +14,11 @@ namespace School.Web.Pages.Student
         public StudentService StudentService { get; set; }
         [Inject]
         public ClassModelService ClassModelService { get; set; }
-
         protected List<StudentItemViewModel> Students { get; set; } = new();
         protected StudentItemViewModel? SelectedStudent { get; set; }
-
         protected EditStudentModel EditModel { get; set; } = new();
         protected DeleteStudentModel DeleteModel { get; set; } = new();
         protected FilterStudentModel FilterStudent { get; set; }
-
         protected bool ShowFilters { get; set; } = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -26,15 +26,30 @@ namespace School.Web.Pages.Teacher
             {
                 try
                 {
+                    IsShowSpiner = true;
+                    await InvokeAsync(StateHasChanged);
+                    await Task.Delay(1);
                     FilterTeacher = new FilterTeacherModel();
 
                     Teachers = TeacherService.GetTeachers();
-                    StateHasChanged();
+
+                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"Ошибка TeacherPage /OnAfterRenderAsync. {e?.Message} {e?.StackTrace}");
                     ShowErrorDialog($"Ошибка: {e.Message}");
+                }
+                finally
+                {
+                    IsShowSpiner = false;
+                    await InvokeAsync(StateHasChanged);
                 }
             }
         }
@@ -45,20 +60,40 @@ namespace School.Web.Pages.Teacher
             StateHasChanged();
         }
 
-        public void Search()
+        public async Task Search()
         {
-            Teachers = TeacherService.GetTeachersFilter(
+            try
+            {
+                IsShowSpiner = true;
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+
+                Teachers = TeacherService.GetTeachersFilter(
                 FilterTeacher.FirstName,
                 FilterTeacher.LastName,
                 FilterTeacher.SubjectName
                 );
-            StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /Search. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+            finally
+            {
+                IsShowSpiner = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
 
-        public void ResetFilter()
+        public async Task ResetFilter()
         {
             try
             {
+                IsShowSpiner = true;
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+
                 FilterTeacher.FirstName = "";
                 FilterTeacher.LastName = "";
                 FilterTeacher.SubjectName = "";
@@ -71,6 +106,11 @@ namespace School.Web.Pages.Teacher
                 Console.WriteLine($"Ошибка TeacherPage /ResetFilter. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
+            finally
+            {
+                IsShowSpiner = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
 
         protected void SelectTeacher(TeacherItemViewModel teacher)
@@ -82,6 +122,14 @@ namespace School.Web.Pages.Teacher
                 EditModel.Model = (TeacherItemViewModel)teacher.Clone();
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
+
+                Toaster.Add("Преподаватель обновлен.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
@@ -135,6 +183,14 @@ namespace School.Web.Pages.Teacher
                 EditModel.Model = new TeacherItemViewModel(new Db.Models.TeacherModel());
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
+
+                Toaster.Add("Создан новый преподаватель.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
@@ -173,6 +229,14 @@ namespace School.Web.Pages.Teacher
                 }
                 DeleteModel.IsOpenDialog = false;
                 DeleteModel.TeacherDelete = null;
+
+                Toaster.Add("Преподаватель был удален.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 75000;
+                        conf.ShowProgressBar = true;
+                    });
             }
             catch (Exception e)
             {
