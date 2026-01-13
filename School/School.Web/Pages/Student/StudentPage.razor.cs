@@ -71,7 +71,7 @@ namespace School.Web.Pages.Student
             {
                 IsShowSpiner = true;
                 await InvokeAsync(StateHasChanged);
-                await Task.Delay(1); 
+                await Task.Delay(1);
 
                 Students = StudentService.GetStudentsFilter(
                     FilterStudent.FirstName,
@@ -202,22 +202,73 @@ namespace School.Web.Pages.Student
             }
         }
 
-        protected void DeleteStudent(StudentItemViewModel student)
+        protected async Task DeleteStudent(StudentItemViewModel student)
         {
             try
             {
-                if (student != null)
+                if (student != null && !student.IsDeleted)
                 {
-                    DeleteModel = new();
-                    DeleteModel.StudentDelete = student;
-                    DeleteModel.IsOpenDialog = true;
-                    StateHasChanged();
+                    var result = await StudentService.MarkAsDeletedAsync(student.Id);
+
+                    if (result)
+                    {
+                        Students = StudentService.GetStudents();
+                        StateHasChanged();
+                        Toaster.Add("Студент перемещен в корзину.", MatBlazor.MatToastType.Info,
+                           null, null,
+                           conf =>
+                           {
+                               conf.VisibleStateDuration = 3000;
+                               conf.ShowProgressBar = true;
+                           });
+                    }
                 }
             }
             catch (Exception e)
             {
 
                 Console.WriteLine($"Ошибка StudentPage /DeleteStudent. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
+        protected async Task DeleteAction(StudentItemViewModel student, bool isRestore)
+        {
+            try
+            {
+                if (student != null && student.IsDeleted)
+                {
+                    if (isRestore)
+                    {
+                        var result = await StudentService.RestoreAsync(student.Id);
+
+                        if (result)
+                        {
+                            Students = StudentService.GetStudents();
+                            StateHasChanged();
+
+                            Toaster.Add("Студент восстановлен.", MatBlazor.MatToastType.Info,
+                               null, null,
+                               conf =>
+                               {
+                                   conf.VisibleStateDuration = 3000;
+                                   conf.ShowProgressBar = true;
+                               });
+                        }
+                    }
+                    else
+                    {
+                        DeleteModel = new();
+                        DeleteModel.StudentDelete = student;
+                        DeleteModel.IsOpenDialog = true;
+                        StateHasChanged();
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка StudentPage /DeleteAction. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }

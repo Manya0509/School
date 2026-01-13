@@ -77,16 +77,26 @@
                     </button>
                 </td>
                 <td>
-                    @if (student.IsDeleted == false)
+                    @if (student.IsDeleted)
                     {
-                        <button class="bi bi-arrow-clockwise"
-                        @onclick="@(() => DeleteStudent(student))">
-                        </button>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-outline-success btn-sm"
+                                    @onclick="@(() => DeleteAction(student, true))"
+                                    title="Восстановить">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm"
+                                    @onclick="@(() => DeleteAction(student, false))"
+                                    title="Удалить окончательно">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
                     }
                     else
                     {
                         <button class="bi bi-trash3"
-                                @onclick="@(() => DeleteStudent(student))">
+                                @onclick="@(() => DeleteStudent(student))"
+                                title="Удалить">
                         </button>
                     }
                 </td>

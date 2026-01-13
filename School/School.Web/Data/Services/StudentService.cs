@@ -90,5 +90,25 @@ namespace School.Web.Data.Services
                 (classId == 0 || x.ClassId == classId)).ToList();
             return list.ConvertAll(x => ConvertItem(x));
         }
+
+        public async Task<bool> MarkAsDeletedAsync(int studentId)
+        {
+            var student = await _repository.FindByIdAsync(studentId);
+            if (student == null) return false;
+            student.IsDeleted = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RestoreAsync(int studentId)
+        {
+            var student = await _repository.FindByIdAsync(studentId);
+            if (student == null) return false;
+
+            student.IsDeleted = false;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
