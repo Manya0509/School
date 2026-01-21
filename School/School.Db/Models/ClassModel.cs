@@ -24,7 +24,7 @@ namespace School.Db.Models
         public int Number { get; set; }
 
 
-        public virtual ICollection<StudentModel> Students { get; set; } = new List<StudentModel>();
+        //public virtual ICollection<StudentModel> Students { get; set; } = new List<StudentModel>();
         //public virtual ICollection<ScheduleModel> Schedules { get; set; } = new List<ScheduleModel>();
     }
 }

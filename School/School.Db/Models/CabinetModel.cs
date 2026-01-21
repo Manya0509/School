@@ -26,8 +26,8 @@ namespace School.Db.Models
         /// </summary>
         public int? TeacherId { get; set; }
 
-        [ForeignKey("TeacherId")]
-        public virtual TeacherModel Teacher { get; set; }
+        //[ForeignKey("TeacherId")]
+        //public virtual TeacherModel Teacher { get; set; }
 
         [Timestamp]
         public byte[] RowVersion { get; set; }

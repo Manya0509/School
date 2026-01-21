@@ -152,14 +152,25 @@ namespace School.Web.Pages.Student
                 {
                     if (item.Id == 0)
                     {
-                        StudentService.AddStudent(item);
+                        var a = StudentService.AddStudent(item);
+                        Students.Add(a);
                     }
                     else
                     {
-                        StudentService.Update(item);
+                        var result = StudentService.Update(item);
+
+                        if (result == null)
+                        {
+                            ShowErrorDialog("Элемент отсутствует в базе данных.");
+                            EditModel.IsOpenDialog = false;
+                            return;
+                        }
+
+                        var i = Students.FindIndex(x => x.Id == item.Id);
+                        Students[i] = result;
                     }
 
-                    Students = StudentService.GetStudents();
+                    //Students = StudentService.GetStudents();
                     StateHasChanged();
                 }
                 EditModel.IsOpenDialog = false;
@@ -206,22 +217,21 @@ namespace School.Web.Pages.Student
         {
             try
             {
-                if (student != null && !student.IsDeleted)
+                if (student != null)
                 {
-                    var result = await StudentService.MarkAsDeletedAsync(student.Id);
+                    StudentService.DeleteStudent(student);
 
-                    if (result)
-                    {
+                    
                         Students = StudentService.GetStudents();
                         StateHasChanged();
-                        Toaster.Add("Студент перемещен в корзину.", MatBlazor.MatToastType.Info,
+                        Toaster.Add("Студент удален.", MatBlazor.MatToastType.Info,
                            null, null,
                            conf =>
                            {
                                conf.VisibleStateDuration = 3000;
                                conf.ShowProgressBar = true;
                            });
-                    }
+                   
                 }
             }
             catch (Exception e)
@@ -232,15 +242,13 @@ namespace School.Web.Pages.Student
             }
         }
 
-        protected async Task DeleteAction(StudentItemViewModel student, bool isRestore)
+        protected async Task DeleteAction(StudentItemViewModel student, bool isDeleted)
         {
             try
             {
-                if (student != null && student.IsDeleted)
+                if (student != null)
                 {
-                    if (isRestore)
-                    {
-                        var result = await StudentService.RestoreAsync(student.Id);
+                        var result = await StudentService.RestoreAsync(student.Id, isDeleted);
 
                         if (result)
                         {
@@ -255,14 +263,6 @@ namespace School.Web.Pages.Student
                                    conf.ShowProgressBar = true;
                                });
                         }
-                    }
-                    else
-                    {
-                        DeleteModel = new();
-                        DeleteModel.StudentDelete = student;
-                        DeleteModel.IsOpenDialog = true;
-                        StateHasChanged();
-                    }
 
                 }
             }

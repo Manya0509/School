@@ -27,7 +27,9 @@ namespace School.Web.PageModels.Classes
         [Range(1, 5, ErrorMessage = "Номер класса должен быть от 1 до 5")]
         public int Number { get => _item.Number; set => _item.Number = value; }
 
-        public virtual ICollection<StudentItemViewModel> Students { get; set; } = new List<StudentItemViewModel>();
-        public virtual ICollection<ScheduleModel> Schedules { get; set; } = new List<ScheduleModel>();
+        public bool IsStudent {get; set; }
+
+        //public virtual ICollection<StudentItemViewModel> Students { get; set; } = new List<StudentItemViewModel>();
+        //public virtual ICollection<ScheduleModel> Schedules { get; set; } = new List<ScheduleModel>();
     }
 }

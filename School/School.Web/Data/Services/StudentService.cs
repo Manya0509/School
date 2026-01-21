@@ -29,7 +29,7 @@ namespace School.Web.Data.Services
             //};
         }
 
-        internal void Update(StudentItemViewModel student)
+        internal StudentItemViewModel Update(StudentItemViewModel student)
         {
             var item = _repository.FindByIdForReload(student.Id); /*_context.StudentDbSet.FirstOrDefault(x => x.Id == student.Id);*/
             if (item != null)
@@ -41,7 +41,9 @@ namespace School.Web.Data.Services
                 item.ClassId = student.ClassId;
 
                 var updateItem = _repository.Update(item, student.Item.RowVersion, "update"); /*_context.UpdateStudent(student.Item);*/
+                return ConvertItem(updateItem);
             }
+            return null;
         }
 
         private StudentItemViewModel ConvertItem(StudentModel x)
@@ -51,10 +53,13 @@ namespace School.Web.Data.Services
             return item;
         }
 
-        public void AddStudent(StudentItemViewModel student)
+        public StudentItemViewModel AddStudent(StudentItemViewModel student)
         {
             var entity = student.Item;
-            _repository.Create(entity);
+            var result = _repository.Create(entity);
+            return ConvertItem(result);
+            
+
             //_context.StudentDbSet.Add(entity);
             //_context.SaveChanges();
         }
@@ -100,14 +105,14 @@ namespace School.Web.Data.Services
             return true;
         }
 
-        public async Task<bool> RestoreAsync(int studentId)
+        public async Task<bool> RestoreAsync(int studentId, bool isDeleted)
         {
             var student = await _repository.FindByIdAsync(studentId);
             if (student == null) return false;
 
-            student.IsDeleted = false;
+            student.IsDeleted = isDeleted;
 
-            await _context.SaveChangesAsync();
+            _repository.Update(student);
             return true;
         }
     }

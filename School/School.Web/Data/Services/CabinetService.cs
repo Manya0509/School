@@ -93,5 +93,24 @@ namespace School.Web.Data.Services
                 }
             }
         }
+
+        public List<CabinetItemViewModel> GetCabinetsFilters(string number, int? teacherId, string teacherName)
+        {
+            var allCabinets = GetCabinets();
+
+            var filtered = allCabinets.Where(c =>
+                    (string.IsNullOrEmpty(number) ||
+                     c.Number.ToString().ToLower().StartsWith(number.ToLower())) &&
+                    (!teacherId.HasValue || teacherId.Value == 0 ||
+                     c.TeacherId == teacherId.Value) &&
+                    (string.IsNullOrEmpty(teacherName) ||
+                     (c.Teacher != null &&
+                      (c.Teacher.LastName.ToLower().StartsWith(teacherName.ToLower()) ||
+                       c.Teacher.FirstName.ToLower().StartsWith(teacherName.ToLower()) ||
+                       c.Teacher.MiddleName.ToLower().StartsWith(teacherName.ToLower())))))
+                .ToList();
+
+            return filtered;
+        }
     }
 }

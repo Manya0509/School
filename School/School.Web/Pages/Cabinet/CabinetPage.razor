@@ -1,6 +1,48 @@
 ﻿@page "/Cabinet"
 @inherits CabinetPageViewModel
 
+<button class="btn btn-outline-primary btn-sm mb-3 bi bi-search"
+        @onclick="ToggleFilters">
+</button>
+
+@if (ShowFilters)
+{
+    <div class="mb-3 p-3 border rounded">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Номер кабинета:</label>
+                <InputText @bind-Value="@FilterCabinet.Number" Class="form-control form-control-sm col-9" id="Number" title="Номер"></InputText>
+            </div>
+            <div class="col-md-4">
+                <label>Преподаватель:</label>
+                <InputText @bind-Value="@FilterCabinet.TeacherName" 
+                            Class="form-control form-control-sm" id="TeacherName" title="Преподаватель"></InputText>
+            </div>
+            <div class="col-md-4">
+                <label>Преподаватель:</label>
+                <InputSelect @bind-Value="@FilterCabinet.TeacherId" Class="form-control form-control-sm">
+                    <option value="">Все преподаватели</option>
+                    @if (FilterCabinet.Teachers != null)
+                    {
+                        @foreach (var item in FilterCabinet.Teachers)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+    </div>
+        <div class="mt-2">
+            <button class="btn btn-primary btn-sm" @onclick="Search">
+                Поиск
+            </button>
+            <button class="btn btn-secondary btn-sm ms-2" @onclick="ResetFilter">
+                Сброс фильтра
+            </button>
+        </div>
+    </div>
+}
+
 <div class="d-flex justify-content-end">
     <button type="button" class="btn-close" aria-label="Close"></button>
 </div>

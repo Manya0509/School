@@ -1,6 +1,7 @@
 ﻿using Alfatraining.Ams.Common.DbRepository;
 using School.Db;
 using School.Db.Models;
+using School.Db.Views;
 using School.Web.PageModels.Students;
 using School.Web.PageModels.Teachers;
 
@@ -84,6 +85,17 @@ namespace School.Web.Data.Services
                 (string.IsNullOrEmpty(subjectName) ||
                 x.SubjectName.ToLower().StartsWith(subjectName.ToLower()))).ToList();
             return list.ConvertAll(x => ConvertItem(x));
+        }
+
+        public List<FilterModel> GetFilterModels()
+        {
+            var list = from t in _context.TeacherDbSet
+                       select new FilterModel()
+                       {
+                           Id = t.Id,
+                           Name = $"{t.LastName} {t.FirstName[0]}.{t.MiddleName[0]}."
+                       };
+            return list.ToList();
         }
     }
 }

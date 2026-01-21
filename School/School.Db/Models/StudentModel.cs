@@ -45,8 +45,8 @@ namespace School.Db.Models
         public int ClassId { get; set; }
         //public virtual ClassModel Class { get; set; }
 
-        [ForeignKey("ClassId")]
-        public virtual ClassModel Class { get; set; }
+        //[ForeignKey("ClassId")]
+        //public virtual ClassModel Class { get; set; }
 
         [Timestamp]
         public byte[] RowVersion { get; set; }

@@ -1,9 +1,11 @@
 ﻿using Alfatraining.Ams.Common.DbRepository.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using School.Db.Views;
 using School.Web.Data.Services;
 using School.Web.PageModels;
 using School.Web.PageModels.Cabinets;
+using School.Web.PageModels.Students;
 using School.Web.PageModels.Teachers;
 
 namespace School.Web.Pages.Cabinet
@@ -18,16 +20,98 @@ namespace School.Web.Pages.Cabinet
         protected List<CabinetItemViewModel> Cabinets { get; set; } = new();
         protected EditCabinetModel EditModel { get; set; } = new();
         protected DeleteCabinetModel DeleteModel { get; set; } = new();
+        protected FilterCabinetModel FilterCabinet { get; set; }
+        protected bool ShowFilters { get; set; } = false;
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             if (firstRender)
             {
+                try
+                {
+                    IsShowSpiner = true;
+                    await InvokeAsync(StateHasChanged);
+                    await Task.Delay(1);
+                    FilterCabinet = new FilterCabinetModel();
+                    FilterCabinet.Teachers = TeacherService.GetFilterModels();
+
+                    Cabinets = CabinetService.GetCabinets();
+
+                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    null, null,
+                    conf =>
+                    {
+                        conf.VisibleStateDuration = 15000;
+                        conf.ShowProgressBar = true;
+                    });
+                }
+
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Ошибка CabinetPage /OnAfterRenderAsync. {e?.Message} {e?.StackTrace}");
+                    ShowErrorDialog($"Ошибка: {e.Message}");
+                }
+                finally
+                {
+                    IsShowSpiner = false;
+                    await InvokeAsync(StateHasChanged);
+                }
+            }
+        }
+
+        public void InitFilter()
+        {
+            try
+            {
+                FilterCabinet = new();
+                FilterCabinet.Teachers = TeacherService.GetFilterModels();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка CabinetPage /InitFilter. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
+        protected void ToggleFilters()
+        { 
+            ShowFilters = !ShowFilters;
+            StateHasChanged();
+        }
+
+        public void Search()
+        {
+            Cabinets = CabinetService.GetCabinetsFilters(
+             FilterCabinet.Number,
+             FilterCabinet.TeacherId,
+             FilterCabinet.TeacherName
+             );
+            StateHasChanged();
+        }
+
+        public void ResetFilter()
+        {
+            try
+            {
+                var teachersList = FilterCabinet.Teachers;
+
+                FilterCabinet = new FilterCabinetModel
+                {
+                    Teachers = teachersList,
+                    Number = "",
+                    TeacherName = "",
+                    TeacherId = null
+                };
+
                 Cabinets = CabinetService.GetCabinets();
-                Teachers = TeacherService.GetTeachers();
                 StateHasChanged();
             }
-            return base.OnAfterRenderAsync(firstRender);
+            catch (Exception e)
+            {
+                ShowErrorDialog($"Ошибка сброса фильтра: {e.Message}");
+            }
         }
 
         protected void SelectCabinet(CabinetItemViewModel cabinet)
@@ -114,7 +198,6 @@ namespace School.Web.Pages.Cabinet
         {
             try
             {
-                //throw new Exception("123");
                 if (item != null)
                 {
                     if (item.Id == 0)

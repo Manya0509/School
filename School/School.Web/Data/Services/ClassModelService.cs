@@ -21,12 +21,12 @@ namespace School.Web.Data.Services
         public List<ClassItemViewModel> GetClasses()
         {
             var classes = _context.ClassDbSet.ToList();
-            var students = _context.StudentDbSet.ToList();
+            //var students = _context.StudentDbSet.ToList();
 
             var result = classes.ConvertAll(classModel =>
             {
-                var classStudents = students.Where(s => s.ClassId == classModel.Id).ToList();
-                return ConvertItem(classModel, classStudents);
+                //var classStudents = students.Where(s => s.ClassId == classModel.Id).ToList();
+                return ConvertItem(classModel /*classStudents*/);
             });
             return result;
         }
@@ -37,16 +37,18 @@ namespace School.Web.Data.Services
             return classes;
         }
 
-        private ClassItemViewModel ConvertItem(ClassModel classModel, List<StudentModel> students)
+        private ClassItemViewModel ConvertItem(ClassModel classModel/* List<StudentModel> students*/)
         {
             var item = new ClassItemViewModel(classModel);
 
-            if (students != null && students.Any())
-            {
-                item.Students = students
-                    .Select(s => new StudentItemViewModel(s))
-                    .ToList();
-            }
+            item.IsStudent = _context.StudentDbSet.Any(x => x.ClassId == item.Id);
+
+            //if (students != null && students.Any())
+            //{
+            //    item.Students = students
+            //        .Select(s => new StudentItemViewModel(s))
+            //        .ToList();
+            //}
 
             return item;
         }
