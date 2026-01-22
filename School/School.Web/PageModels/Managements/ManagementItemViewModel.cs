@@ -60,6 +60,7 @@ namespace School.Web.PageModels.Managements
         /// </summary>
         [Range(20, 70, ErrorMessage = "Возраст должен быть от 20 до 70 лет")]
         public int Age { get => _item.Age; set => _item.Age = value; }
+        public bool IsDeleted { get => _item.IsDeleted; set => _item.IsDeleted = value; }
 
         public List<ChangeLogJson> ChangeLogs { get; set; }
 

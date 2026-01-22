@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using School.Web.Data.Services;
 using School.Web.PageModels;
 using School.Web.PageModels.Managements;
+using School.Web.PageModels.Students;
 using School.Web.PageModels.Teachers;
 
 namespace School.Web.Pages.Management
@@ -30,7 +31,7 @@ namespace School.Web.Pages.Management
                     FilterManagement = new FilterManagementModel();
                     Managements = ManagementService.GetManagements();
 
-                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    Toaster.Add("Руководство загружено.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
@@ -83,21 +84,29 @@ namespace School.Web.Pages.Management
             }
         }
 
-        public void ResetFilter()
+        public async Task ResetFilter()
         {
             try
             {
+                IsShowSpiner = true;
+                await InvokeAsync(StateHasChanged);
+
                 FilterManagement.LastName = "";
                 FilterManagement.FirstName = "";
                 FilterManagement.Position = "";
 
                 Managements = ManagementService.GetManagements();
-                StateHasChanged();
+                await InvokeAsync(StateHasChanged);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Ошибка ManagementPage /ResetFilter. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+            finally
+            {
+                IsShowSpiner = false;
+                await InvokeAsync(StateHasChanged);
             }
         }
 
@@ -164,13 +173,24 @@ namespace School.Web.Pages.Management
                 {
                     if (item.Id == 0)
                     {
-                        ManagementService.AddManagement(item);
+                        var newManagement = ManagementService.AddManagement(item);
+                        Managements.Add(newManagement);
                     }
                     else
                     {
-                        ManagementService.Update(item);
+                        var result = ManagementService.Update(item);
+
+                        if (result == null)
+                        {
+                            ShowErrorDialog("Руководитель отсутствует в базе данных.");
+                            EditModel.IsOpenDialog = false;
+                            return;
+                        }
+
+                        var i = Managements.FindIndex(x => x.Id == item.Id);
+                        Managements[i] = result;
                     }
-                    Managements = ManagementService.GetManagements();
+
                     StateHasChanged();
                 }
                 EditModel.IsOpenDialog = false;
@@ -185,7 +205,6 @@ namespace School.Web.Pages.Management
                 Console.WriteLine($"Ошибка ManagementPage /SaveChanges. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
-
         }
 
         protected void DeleteManagement(ManagementItemViewModel management)
@@ -207,6 +226,41 @@ namespace School.Web.Pages.Management
             }
         }
 
+        protected async Task DeleteAction(ManagementItemViewModel management, bool isDeleted)
+        {
+            try
+            {
+                if (management != null)
+                {
+                    var result = await ManagementService.RestoreAsync(management.Id, isDeleted);
+
+                    if (result)
+                    {
+                        var updatedManagement = ManagementService.GetManagement(management.Id);
+                        var index = Managements.FindIndex(m => m.Id == management.Id);
+                        if (index >= 0)
+                        {
+                            Managements[index] = updatedManagement;
+                        }
+                        StateHasChanged();
+
+                        Toaster.Add("Руководитель восстановлен.", MatBlazor.MatToastType.Info,
+                           null, null,
+                           conf =>
+                           {
+                               conf.VisibleStateDuration = 3000;
+                               conf.ShowProgressBar = true;
+                           });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка ManagementPage /DeleteAction. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
         protected void ConfirmDelete(bool confirmed)
         {
             try
@@ -220,11 +274,11 @@ namespace School.Web.Pages.Management
                 DeleteModel.IsOpenDialog = false;
                 DeleteModel.ManagementDelete = null;
 
-                Toaster.Add("Руководитель был удален.", MatBlazor.MatToastType.Info,
+                Toaster.Add("Руководитель удален.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 75000;
+                        conf.VisibleStateDuration = 4000;
                         conf.ShowProgressBar = true;
                     });
             }

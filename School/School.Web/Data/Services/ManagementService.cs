@@ -3,6 +3,7 @@ using School.Db;
 using School.Db.Models;
 using School.Web.PageModels.Cabinets;
 using School.Web.PageModels.Managements;
+using School.Web.PageModels.Students;
 
 namespace School.Web.Data.Services
 {
@@ -23,15 +24,16 @@ namespace School.Web.Data.Services
             return list.ConvertAll(x => ConvertItem(x));
         }
 
-        public void AddManagement(ManagementItemViewModel management)
+        public ManagementItemViewModel AddManagement(ManagementItemViewModel management)
         {
             var entity = management.Item;
-            _repository.Create(entity);
+            var result = _repository.Create(entity);
+            return ConvertItem(result);
             //_context.ManagementDbSet.Add(entity);
             //_context.SaveChanges();
         }
 
-        internal void Update(ManagementItemViewModel management)
+        internal ManagementItemViewModel Update(ManagementItemViewModel management)
         {
             var item = _repository.FindByIdForReload(management.Id);
             if (item != null)
@@ -43,7 +45,10 @@ namespace School.Web.Data.Services
                 item.Age = management.Age;
 
                 var updateItem = _repository.Update(item, management.Item.RowVersion, "update");
+
+                return ConvertItem(updateItem);
             }
+            return null;
         }
 
         private ManagementItemViewModel ConvertItem(ManagementModel x)
@@ -69,13 +74,17 @@ namespace School.Web.Data.Services
         public ManagementItemViewModel GetManagement(int id)
         {
             var management = _repository.FindById(id);
-            var result = new ManagementItemViewModel(management);
-            return result;
+            if (management != null)
+            {
+                return ConvertItem(management);
+            }
+            return null;
         }
 
         public List<ManagementItemViewModel> GetManagementsFilter(string lastName, string firstName, string position)
         {
             var list = _repository.GetQueryable().Where(x =>
+                !x.IsDeleted && 
                 (string.IsNullOrEmpty(firstName) ||
                 x.FirstName.ToLower().StartsWith(firstName.ToLower())) &&
                 (string.IsNullOrEmpty(lastName) ||
@@ -83,6 +92,24 @@ namespace School.Web.Data.Services
                 (string.IsNullOrEmpty(position) ||
                 x.Position.ToLower().StartsWith(position.ToLower()))).ToList();
             return list.ConvertAll(x => ConvertItem(x));
+        }
+
+        public async Task<bool> RestoreAsync(int managementId, bool isDeleted)
+        {
+            try
+            {
+                var management = await _repository.FindByIdAsync(managementId);
+                if (management == null) return false;
+
+                management.IsDeleted = isDeleted;
+
+                var result = _repository.Update(management, management.RowVersion);
+                return result != null; 
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

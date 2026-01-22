@@ -133,12 +133,6 @@ namespace School.Web.Data.Services
                 return false;
             }
         }
-
-        public bool HasStudentsInClass(int classId)
-        {
-            return _context.StudentDbSet.Any(x => x.ClassId == classId && !x.IsDeleted);
-        }
-
     }
 }
 

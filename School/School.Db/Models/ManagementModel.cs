@@ -41,6 +41,9 @@ namespace School.Db.Models
         /// Возраст
         /// </summary>
         public int Age { get; set; }
+
+        public bool IsDeleted { get; set; }
+
         [Timestamp]
         public byte[] RowVersion { get; set; }
         public string ChangeLogJson { get; set; }

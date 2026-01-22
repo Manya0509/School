@@ -120,7 +120,7 @@ namespace School.Web.Pages.ClassModel
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
 
-                Toaster.Add("Класс обновлен.", MatBlazor.MatToastType.Info,
+                Toaster.Add("Класс изменен.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
@@ -202,7 +202,7 @@ namespace School.Web.Pages.ClassModel
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка ClassPage /DeleteAction. {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка ClassModelPage /DeleteAction. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
@@ -237,7 +237,7 @@ namespace School.Web.Pages.ClassModel
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка ClassPage /DeleteClass. {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка ClassModelPage /DeleteClass. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
@@ -268,7 +268,7 @@ namespace School.Web.Pages.ClassModel
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка ClassPage /ConfirmDelete. {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка ClassModelPage /ConfirmDelete. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
@@ -310,7 +310,7 @@ namespace School.Web.Pages.ClassModel
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка ClassPage /SaveChanges. {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка ClassModelPage /SaveChanges. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
@@ -339,7 +339,7 @@ namespace School.Web.Pages.ClassModel
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка ClassPage /HandleReload. {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка ClassModelPage /HandleReload. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }

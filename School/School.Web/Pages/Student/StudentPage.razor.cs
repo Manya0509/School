@@ -90,14 +90,12 @@ namespace School.Web.Pages.Student
             }
         }
 
-
         public async Task ResetFilter()
         {
             try
             {
                 IsShowSpiner = true;
                 await InvokeAsync(StateHasChanged);
-                await Task.Delay(1);
 
                 FilterStudent.FirstName = "";
                 FilterStudent.LastName = "";
@@ -128,11 +126,11 @@ namespace School.Web.Pages.Student
                 EditModel.IsOpenDialog = true;
                 StateHasChanged();
 
-                Toaster.Add("Студент обновлен.", MatBlazor.MatToastType.Info,
+                Toaster.Add("Студент изменен.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 15000;
+                        conf.VisibleStateDuration = 4000;
                         conf.ShowProgressBar = true;
                     });
             }
@@ -160,7 +158,7 @@ namespace School.Web.Pages.Student
 
                         if (result == null)
                         {
-                            ShowErrorDialog("Элемент отсутствует в базе данных.");
+                            ShowErrorDialog("Студент отсутствует в базе данных.");
                             EditModel.IsOpenDialog = false;
                             return;
                         }
@@ -267,7 +265,6 @@ namespace School.Web.Pages.Student
                                    conf.ShowProgressBar = true;
                                });
                         }
-
                 }
             }
             catch (Exception e)
@@ -290,7 +287,7 @@ namespace School.Web.Pages.Student
                 DeleteModel.IsOpenDialog = false;
                 DeleteModel.StudentDelete = null;
 
-                Toaster.Add("Студент был удален.", MatBlazor.MatToastType.Info,
+                Toaster.Add("Студент удален.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
@@ -309,23 +306,19 @@ namespace School.Web.Pages.Student
         {
             try
             {
-                // Получаем обновленного студента из БД
                 var updatedStudent = StudentService.GetStudent(item.Id);
 
                 if (updatedStudent != null)
                 {
-                    // Обновляем только измененный элемент в списке
                     var index = Students.FindIndex(s => s.Id == item.Id);
                     if (index >= 0)
                     {
                         Students[index] = updatedStudent;
                     }
 
-                    // Обновляем модель в диалоге
                     EditModel.Model = updatedStudent;
                 }
 
-                // Сбрасываем флаг конфликта (диалог остается открытым)
                 EditModel.IsConcurrency = false;
                 StateHasChanged();
             }
