@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using School.Web.Data.Services;
 using School.Web.PageModels;
+using School.Web.PageModels.Students;
 using School.Web.PageModels.Teachers;
 
 namespace School.Web.Pages.Teacher
@@ -33,11 +34,11 @@ namespace School.Web.Pages.Teacher
 
                     Teachers = TeacherService.GetTeachers();
 
-                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    Toaster.Add("Преподаватели загружены.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 15000;
+                        conf.VisibleStateDuration = 4000;
                         conf.ShowProgressBar = true;
                     });
                 }
@@ -127,7 +128,7 @@ namespace School.Web.Pages.Teacher
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 15000;
+                        conf.VisibleStateDuration = 4000;
                         conf.ShowProgressBar = true;
                     });
             }
@@ -152,13 +153,23 @@ namespace School.Web.Pages.Teacher
                 {
                     if (item.Id == 0)
                     {
-                        TeacherService.AddTeacher(item);
+                        var newTeacher = TeacherService.AddTeacher(item);
+                        Teachers.Add(newTeacher);
                     }
                     else
                     {
-                        TeacherService.Update(item);
+                        var result = TeacherService.Update(item);
+
+                        if (result == null)
+                        {
+                            ShowErrorDialog("Преподаватель отсутствует в базе данных.");
+                            EditModel.IsOpenDialog = false;
+                            return;
+                        }
+
+                        var i = Teachers.FindIndex(t => t.Id == item.Id);
+                        Teachers[i] = result;
                     }
-                    Teachers = TeacherService.GetTeachers();
                     StateHasChanged();
                 }
                 EditModel.IsOpenDialog = false;
@@ -188,7 +199,7 @@ namespace School.Web.Pages.Teacher
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 15000;
+                        conf.VisibleStateDuration = 4000;
                         conf.ShowProgressBar = true;
                     });
             }
@@ -217,6 +228,43 @@ namespace School.Web.Pages.Teacher
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
+
+        protected async Task DeleteAction(TeacherItemViewModel teacher, bool isDeleted)
+        {
+            try
+            {
+                if (teacher != null)
+                {
+                    var result = await TeacherService.RestoreAsync(teacher.Id, isDeleted);
+
+                    if (result)
+                    {
+                        var updatedTeacher = TeacherService.GetTeacher(teacher.Id);
+                        var index = Teachers.FindIndex(t => t.Id == teacher.Id);
+                        if (index >= 0)
+                        {
+                            Teachers[index] = updatedTeacher;
+                        }
+                        StateHasChanged();
+
+                        var message = isDeleted ? "Преподаватель перенесен в корзину." : "Преподаватель восстановлен.";
+
+                        Toaster.Add(message, MatBlazor.MatToastType.Info,
+                           null, null,
+                           conf =>
+                           {
+                               conf.VisibleStateDuration = 3000;
+                               conf.ShowProgressBar = true;
+                           });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка TeacherPage /DeleteAction. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
         protected void ConfirmDelete(bool confirmed)
         {
             try
@@ -230,11 +278,11 @@ namespace School.Web.Pages.Teacher
                 DeleteModel.IsOpenDialog = false;
                 DeleteModel.TeacherDelete = null;
 
-                Toaster.Add("Преподаватель был удален.", MatBlazor.MatToastType.Info,
+                Toaster.Add("Преподаватель удален.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 75000;
+                        conf.VisibleStateDuration = 4000;
                         conf.ShowProgressBar = true;
                     });
             }

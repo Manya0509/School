@@ -61,6 +61,8 @@ namespace School.Web.PageModels.Teachers
         [StringLength(50, ErrorMessage = "Предмет не должен превышать 50 символов")]
         public string SubjectName { get => _item.SubjectName; set => _item.SubjectName = value; }
 
+        public bool IsDeleted { get => _item.IsDeleted; set => _item.IsDeleted = value; }
+
         public List<ChangeLogJson> ChangeLogs { get; set; }
 
         public object Clone()

@@ -66,15 +66,34 @@
                 <td>@teacher.SubjectName</td>
                 <td>
                     <button class="btn btn-outline-secondary"
-                            @onclick="@(() => SelectTeacher(teacher))">
-                        Изменить
+                            @onclick="@(() => SelectTeacher(teacher))"
+                            title="Изменить">
+                        <i class="bi bi-pencil"></i>
                     </button>
                 </td>
                 <td>
-                    <button class="btn btn-outline-danger"
-                            @onclick="@(() => DeleteTeacher(teacher))">
-                        Удалить
-                    </button>
+                    @if (teacher.IsDeleted)
+                    {
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-outline-success btn-sm"
+                                    @onclick="@(() => DeleteAction(teacher, false))"
+                                    title="Восстановить">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm"
+                                    @onclick="@(() => DeleteTeacher(teacher))"
+                                    title="Удалить окончательно">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="bi bi-trash3"
+                                @onclick="@(() => DeleteAction(teacher, true))"
+                                title="Удалить">
+                        </button>
+                    }
                 </td>
                 <td>
                     @if (teacher.ChangeLogs != null)

@@ -244,7 +244,9 @@ namespace School.Web.Pages.Management
                         }
                         StateHasChanged();
 
-                        Toaster.Add("Руководитель восстановлен.", MatBlazor.MatToastType.Info,
+                        var message = isDeleted ? "Руководитель перенесен в корзину." : "Руководитель восстановлен.";
+
+                        Toaster.Add(message, MatBlazor.MatToastType.Info,
                            null, null,
                            conf =>
                            {

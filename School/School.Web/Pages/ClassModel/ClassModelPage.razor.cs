@@ -189,8 +189,9 @@ namespace School.Web.Pages.ClassModel
 
                         StateHasChanged();
 
-                        Toaster.Add(isDeleted ? "Класс перенесен в корзину." : "Класс восстановлен.",
-                                   MatBlazor.MatToastType.Info,
+                        var message = isDeleted ? "Класс перенесен в корзину." : "Класс восстановлен.";
+
+                        Toaster.Add(message, MatBlazor.MatToastType.Info,
                                    null, null,
                                    conf =>
                                    {

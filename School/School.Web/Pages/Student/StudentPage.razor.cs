@@ -257,7 +257,9 @@ namespace School.Web.Pages.Student
                         }
                         StateHasChanged();
 
-                            Toaster.Add("Студент восстановлен.", MatBlazor.MatToastType.Info,
+                        var message = isDeleted ? "Студент перенесен в корзину." : "Студент восстановлен.";
+
+                        Toaster.Add(message, MatBlazor.MatToastType.Info,
                                null, null,
                                conf =>
                                {

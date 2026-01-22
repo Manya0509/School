@@ -66,8 +66,9 @@
                 <td>@management.Age</td>
                 <td>
                     <button class="btn btn-outline-secondary"
-                            @onclick="@(() => SelectManagement(management))">
-                        Изменить
+                            @onclick="@(() => SelectManagement(management))"
+                            title="Изменить">
+                        <i class="bi bi-pencil"></i>
                     </button>
                 </td>
                 <td>

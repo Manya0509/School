@@ -72,8 +72,9 @@
                 <td>@student.ClassId</td>
                 <td>
                     <button class="btn btn-outline-secondary"
-                            @onclick="@(() => SelectStudent(student))">
-                        Изменить
+                            @onclick="@(() => SelectStudent(student))"
+                            title="Изменить">
+                        <i class="bi bi-pencil"></i>
                     </button>
                 </td>
                 <td>

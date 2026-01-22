@@ -41,6 +41,8 @@ namespace School.Db.Models
         /// </summary>
         public string SubjectName { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         [Timestamp]
         public byte[] RowVersion { get; set; }
         public string ChangeLogJson { get; set; }

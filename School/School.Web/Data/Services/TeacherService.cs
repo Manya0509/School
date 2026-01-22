@@ -4,6 +4,7 @@ using School.Db.Models;
 using School.Db.Views;
 using School.Web.PageModels.Students;
 using School.Web.PageModels.Teachers;
+using School.Web.Pages.Teacher;
 
 namespace School.Web.Data.Services
 {
@@ -24,7 +25,7 @@ namespace School.Web.Data.Services
             return list.ConvertAll(x => ConvertItem(x));
         }
 
-        internal void Update(TeacherItemViewModel teacher)
+        internal TeacherItemViewModel Update(TeacherItemViewModel teacher)
         {
             var item = _repository.FindByIdForReload(teacher.Id);
 
@@ -37,7 +38,9 @@ namespace School.Web.Data.Services
                 item.SubjectName = teacher.SubjectName;
 
                 var updateItem = _repository.Update(item, teacher.Item.RowVersion, "update");
+                return ConvertItem(updateItem);
             }
+            return null;
         }
 
         private TeacherItemViewModel ConvertItem(TeacherModel x)
@@ -46,10 +49,11 @@ namespace School.Web.Data.Services
             return item;
         }
 
-        public void AddTeacher(TeacherItemViewModel teacher)
+        public TeacherItemViewModel AddTeacher(TeacherItemViewModel teacher)
         { 
             var entity = teacher.Item;
-            _repository.Create(entity);
+            var result = _repository.Create(entity);
+            return ConvertItem(result);
             //_context.TeacherDbSet.Add(entity);
             //_context.SaveChanges(); 
         }
@@ -71,8 +75,11 @@ namespace School.Web.Data.Services
         public TeacherItemViewModel GetTeacher(int id)
         {
             var teacher = _repository.FindById(id);
-            var result = new TeacherItemViewModel(teacher);
-            return result;
+            if (teacher != null)
+            {
+                return ConvertItem(teacher);
+            }
+            return null;
         }
 
         public List<TeacherItemViewModel> GetTeachersFilter(string firstName, string lastName, string subjectName)
@@ -96,6 +103,24 @@ namespace School.Web.Data.Services
                            Name = $"{t.LastName} {t.FirstName[0]}.{t.MiddleName[0]}."
                        };
             return list.ToList();
+        }
+
+        public async Task<bool> RestoreAsync(int teacherId, bool isDeleted)
+        {
+            try
+            {
+                var teacher = await _repository.FindByIdAsync(teacherId);
+                if (teacher == null) return false;
+
+                teacher.IsDeleted = isDeleted;
+
+                var result = _repository.Update(teacher, teacher.RowVersion);
+                return result != null;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
