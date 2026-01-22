@@ -15,7 +15,6 @@ namespace School.Web.Pages.Student
         [Inject]
         public ClassModelService ClassModelService { get; set; }
         protected List<StudentItemViewModel> Students { get; set; } = new();
-        protected StudentItemViewModel? SelectedStudent { get; set; }
         protected EditStudentModel EditModel { get; set; } = new();
         protected DeleteStudentModel DeleteModel { get; set; } = new();
         protected FilterStudentModel FilterStudent { get; set; }
@@ -37,11 +36,11 @@ namespace School.Web.Pages.Student
 
                     Students = StudentService.GetStudents();
 
-                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    Toaster.Add("Студенты загружены.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 15000;
+                        conf.VisibleStateDuration = 3000;
                         conf.ShowProgressBar = true;
                     });
                 }
@@ -213,7 +212,7 @@ namespace School.Web.Pages.Student
             }
         }
 
-        protected async Task DeleteStudent(StudentItemViewModel student)
+        protected void DeleteStudent(StudentItemViewModel student)
         {
             try
             {
@@ -221,9 +220,9 @@ namespace School.Web.Pages.Student
                 {
                     StudentService.DeleteStudent(student);
 
-                    
-                        Students = StudentService.GetStudents();
-                        StateHasChanged();
+
+                    Students.RemoveAll(s => s.Id == student.Id);
+                    StateHasChanged();
                         Toaster.Add("Студент удален.", MatBlazor.MatToastType.Info,
                            null, null,
                            conf =>
@@ -252,8 +251,13 @@ namespace School.Web.Pages.Student
 
                         if (result)
                         {
-                            Students = StudentService.GetStudents();
-                            StateHasChanged();
+                        var updatedStudent = StudentService.GetStudent(student.Id);
+                        var index = Students.FindIndex(s => s.Id == student.Id);
+                        if (index >= 0)
+                        {
+                            Students[index] = updatedStudent;
+                        }
+                        StateHasChanged();
 
                             Toaster.Add("Студент восстановлен.", MatBlazor.MatToastType.Info,
                                null, null,
@@ -280,7 +284,7 @@ namespace School.Web.Pages.Student
                 if (confirmed && DeleteModel.StudentDelete != null)
                 {
                     StudentService.DeleteStudent(DeleteModel.StudentDelete);
-                    Students = StudentService.GetStudents();
+                    Students.RemoveAll(s => s.Id == DeleteModel.StudentDelete.Id);
                     StateHasChanged();
                 }
                 DeleteModel.IsOpenDialog = false;
@@ -305,8 +309,23 @@ namespace School.Web.Pages.Student
         {
             try
             {
-                Students = StudentService.GetStudents();
-                EditModel.Model = StudentService.GetStudent(item.Id);
+                // Получаем обновленного студента из БД
+                var updatedStudent = StudentService.GetStudent(item.Id);
+
+                if (updatedStudent != null)
+                {
+                    // Обновляем только измененный элемент в списке
+                    var index = Students.FindIndex(s => s.Id == item.Id);
+                    if (index >= 0)
+                    {
+                        Students[index] = updatedStudent;
+                    }
+
+                    // Обновляем модель в диалоге
+                    EditModel.Model = updatedStudent;
+                }
+
+                // Сбрасываем флаг конфликта (диалог остается открытым)
                 EditModel.IsConcurrency = false;
                 StateHasChanged();
             }

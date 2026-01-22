@@ -1,6 +1,34 @@
 ﻿@page "/ClassModel"
 @inherits ClassPageViewModel
-<h3>Классы и ученики</h3>
+<h3>Классы</h3>
+
+<button class="btn btn-outline-primary btn-sm mb-3 bi bi-search"
+        @onclick="ToggleFilters">
+</button>
+
+@if (ShowFilters)
+{
+    <div class="mb-3 p-3 border rounded">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Номер класса:</label>
+                <InputText @bind-Value="FilterClassModel.Number"
+                           class="form-control form-control-sm col-9" id="Number" title="Номер класса" />
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <button class="btn btn-primary btn-sm" @onclick="Search">
+                Поиск
+            </button>
+            <button class="btn btn-secondary btn-sm ms-2" @onclick="ResetFilter">
+                Сброс фильтра
+            </button>
+        </div>
+    </div>
+}
+
+<CircleLoader IsShowSpiner="IsShowSpiner"></CircleLoader>
 
     <table class="table table-striped">
 
@@ -9,6 +37,10 @@
                 <tr>
                     <th>Id класса</th>
                     <th>Номер класса</th>
+                    <th>Статус</th>
+                    <th>Изменение</th>
+                    <th>Действия</th>
+                    <th>История</th>
                     @* <th>ID</th>
                     <th>Фамилия</th>
                     <th>Имя</th>
@@ -22,6 +54,53 @@
                 <tr>
                     <td>@classItem.Id</td>
                     <td>@classItem.Number</td>
+                    <td>
+                        @if (classItem.IsStudent)
+                        {
+                            <i class="bi bi-check-square text-success" title="В классе есть ученики"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-x-square text-danger" title="В классе нет учеников"></i>
+                        }
+                    </td>
+                    <td>
+                    <button class="btn btn-outline-secondary"
+                            @onclick="@(() => SelectClass(classItem))"
+                        title="Изменить">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    </td>
+                    <td>
+                        @if (classItem.IsDeleted)
+                        {
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-outline-success btn-sm"
+                                        @onclick="@(() => DeleteAction(classItem, false))"
+                                        title="Восстановить">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm"
+                                        @onclick="@(() => DeleteClass(classItem))"
+                                        title="Удалить окончательно">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <button class="bi bi-trash3"
+                                    @onclick="@(() => DeleteAction(classItem, true))"
+                                    title="Перенести в корзину">
+                            </button>
+                        }
+                    </td>
+                    <td>
+                        @if (classItem.ChangeLogs != null)
+                        {
+                            <i class="bi bi-info-circle" title="@GetChangeLog(classItem.ChangeLogs)"></i>
+                        }
+                    </td>
                 </tr>
                 
             }
@@ -39,7 +118,11 @@
         </table>
     </table>
 
+<button class="btn btn-primary mb-3" @onclick="AddNewClass">Добавить класс</button>
 
+<EditClassDialog ViewModel="EditModel" Save="SaveChanges" Reload="HandleReload"></EditClassDialog>
+<DeleteClassDialog ViewModel="DeleteModel" ConfirmDelete="ConfirmDelete"></DeleteClassDialog>
+<ErrorDialog IsOpen="@IsOpenErrorDialog" Message="@ErrorMessage" OnClose="@CloseErrorDialog" />
 
 @code {
 

@@ -1,4 +1,5 @@
 ﻿using Alfatraining.Ams.Common.DbRepository;
+using Microsoft.EntityFrameworkCore;
 using School.Db;
 using School.Db.Models;
 using School.Web.PageModels.Managements;
@@ -81,8 +82,11 @@ namespace School.Web.Data.Services
         public StudentItemViewModel GetStudent(int id)
         {
             var student = _repository.FindById(id);
-            var result = new StudentItemViewModel(student);
-            return result;
+            if (student != null)
+            {
+                return ConvertItem(student); 
+            }
+            return null;
         }
 
         public List<StudentItemViewModel> GetStudentsFilter(string firstName, string lastName, int classId)
@@ -107,13 +111,25 @@ namespace School.Web.Data.Services
 
         public async Task<bool> RestoreAsync(int studentId, bool isDeleted)
         {
-            var student = await _repository.FindByIdAsync(studentId);
-            if (student == null) return false;
+            try
+            {
+                var student = await _repository.FindByIdAsync(studentId);
+                if (student == null) return false;
 
-            student.IsDeleted = isDeleted;
+                student.IsDeleted = isDeleted;
 
-            _repository.Update(student);
-            return true;
+                var result = _repository.Update(student, student.RowVersion);
+                return result != null; 
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> HasStudentsInClassAsync(int classId)
+        {
+            return await _context.StudentDbSet.AnyAsync(s => s.ClassId == classId && !s.IsDeleted);
         }
     }
 }
