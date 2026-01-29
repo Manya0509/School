@@ -5,6 +5,7 @@ using School.Db.Views;
 using School.Web.Data.Services;
 using School.Web.PageModels;
 using School.Web.PageModels.Cabinets;
+using School.Web.PageModels.Classes;
 using School.Web.PageModels.Students;
 using School.Web.PageModels.Teachers;
 
@@ -39,11 +40,11 @@ namespace School.Web.Pages.Cabinet
 
                     Cabinets = CabinetService.GetCabinets();
 
-                    Toaster.Add("TEXT.", MatBlazor.MatToastType.Info,
+                    Toaster.Add("Кабинеты загружены.", MatBlazor.MatToastType.Info,
                     null, null,
                     conf =>
                     {
-                        conf.VisibleStateDuration = 15000;
+                        conf.VisibleStateDuration = 4000;
                         conf.ShowProgressBar = true;
                     });
                 }
@@ -81,15 +82,27 @@ namespace School.Web.Pages.Cabinet
             StateHasChanged();
         }
 
-        public void Search()
+        public async Task Search()
         {
-            Cabinets = CabinetService.GetCabinetsFilters(
-             FilterCabinet.Number,
-             FilterCabinet.TeacherId,
-             FilterCabinet.TeacherName
-             );
-            StateHasChanged();
+            try
+            {
+                IsShowSpiner = true;
+                await InvokeAsync(StateHasChanged);
+
+                Cabinets = CabinetService.GetFilterCabinets(FilterCabinet.Number);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка CabinetPage /Search. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка при поиске: {e.Message}");
+            }
+            finally
+            {
+                IsShowSpiner = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
+
 
         public void ResetFilter()
         {
@@ -101,8 +114,6 @@ namespace School.Web.Pages.Cabinet
                 {
                     Teachers = teachersList,
                     Number = "",
-                    TeacherName = "",
-                    TeacherId = null
                 };
 
                 Cabinets = CabinetService.GetCabinets();
@@ -121,7 +132,7 @@ namespace School.Web.Pages.Cabinet
                 EditModel = new EditCabinetModel
                 {
                     Model = (CabinetItemViewModel)cabinet.Clone(),
-                    Teachers = Teachers,
+                    Teachers = TeacherService.GetTeachers(),
                     IsOpenDialog = true
                 };
                 StateHasChanged();
@@ -140,7 +151,7 @@ namespace School.Web.Pages.Cabinet
                 EditModel = new EditCabinetModel
                 {
                     Model = new CabinetItemViewModel(new Db.Models.CabinetModel()),
-                    Teachers = Teachers,
+                    Teachers = TeacherService.GetTeachers(),
                     IsOpenDialog = true
                 };
                 StateHasChanged();
@@ -167,6 +178,55 @@ namespace School.Web.Pages.Cabinet
             catch (Exception e)
             {
                 Console.WriteLine($"Ошибка CabinetPage /DeleteCabinet. {e?.Message} {e?.StackTrace}");
+                ShowErrorDialog($"Ошибка: {e.Message}");
+            }
+        }
+
+        protected async Task DeleteAction(CabinetItemViewModel cabinet, bool isDeleted)
+        {
+            try
+            {
+                if (isDeleted)
+                {
+                    var hasTeachers = await TeacherService.HasTeachersInClabinetAsync(cabinet.Id);
+                    if (hasTeachers)
+                    {
+                        ShowErrorDialog("Невозможно удалить кабинет: к кабинету прикреплен преподаватель.");
+                        return;
+                    }
+                }
+
+                if (cabinet != null)
+                {
+                    var result = await CabinetService.RestoreAsync(cabinet.Id, isDeleted);
+
+                    if (result)
+                    {
+                        var updatedCabinet = CabinetService.GetCabinet(cabinet.Id);
+                        var index = Cabinets.FindIndex(c => c.Id == cabinet.Id);
+
+                        if (index >= 0 && updatedCabinet != null)
+                        {
+                            Cabinets[index] = updatedCabinet;
+                        }
+
+                        StateHasChanged();
+
+                        var message = isDeleted ? "Кабинет перенесен в корзину." : "Кабинет восстановлен.";
+
+                        Toaster.Add(message, MatBlazor.MatToastType.Info,
+                                   null, null,
+                                   conf =>
+                                   {
+                                       conf.VisibleStateDuration = 3000;
+                                       conf.ShowProgressBar = true;
+                                   });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка CabinetPage /DeleteAction. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
         }
@@ -202,15 +262,23 @@ namespace School.Web.Pages.Cabinet
                 {
                     if (item.Id == 0)
                     {
-                        CabinetService.AddCabinet(item);
+                        var newCabinet = CabinetService.AddCabinet(item);
+                        Cabinets.Add(newCabinet);
                     }
                     else
                     {
-                        CabinetService.Update(item);
-                    }
+                        var result = CabinetService.Update(item);
 
-                    Cabinets = CabinetService.GetCabinets();
-                    Teachers = TeacherService.GetTeachers();
+                        if (result == null)
+                        {
+                            ShowErrorDialog("Элемент отсутствует в базе данных.");
+                            EditModel.IsOpenDialog = false;
+                            return;
+                        }
+
+                        var i = Cabinets.FindIndex(c => c.Id == item.Id);
+                        Cabinets[i] = result;
+                    }
                     StateHasChanged();
                 }
                 EditModel.IsOpenDialog = false;
@@ -222,15 +290,10 @@ namespace School.Web.Pages.Cabinet
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка CabinetPage /SaveChanges. {e?.Message} {e?.StackTrace}");
+                Console.WriteLine($"Ошибка ClassModelPage /SaveChanges. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
-            finally
-            {
-
-            }
         }
-
 
         protected void HandleReload(CabinetItemViewModel item)
         {

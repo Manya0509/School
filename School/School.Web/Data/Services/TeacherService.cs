@@ -1,4 +1,5 @@
 ﻿using Alfatraining.Ams.Common.DbRepository;
+using Microsoft.EntityFrameworkCore;
 using School.Db;
 using School.Db.Models;
 using School.Db.Views;
@@ -121,6 +122,11 @@ namespace School.Web.Data.Services
             {
                 return false;
             }
+        }
+
+        public async Task<bool> HasTeachersInClabinetAsync(int cabinetId)
+        {
+            return await _context.CabinetDbSet.AnyAsync(c => c.Id == cabinetId && c.TeacherId.HasValue && c.TeacherId.Value > 0);
         }
     }
 }

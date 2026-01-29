@@ -26,6 +26,8 @@ namespace School.Db.Models
         /// </summary>
         public int? TeacherId { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         //[ForeignKey("TeacherId")]
         //public virtual TeacherModel Teacher { get; set; }
 

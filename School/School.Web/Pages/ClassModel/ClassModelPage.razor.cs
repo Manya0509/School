@@ -68,7 +68,6 @@ namespace School.Web.Pages.ClassModel
             {
                 IsShowSpiner = true;
                 await InvokeAsync(StateHasChanged);
-                await Task.Delay(1);
 
                 Classes = ClassModelService.GetFilterClasses(
                     FilterClassModel.Number

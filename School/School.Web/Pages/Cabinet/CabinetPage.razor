@@ -67,18 +67,37 @@
                 <td>@cabinet.Id</td>
                 <td>@cabinet.Number</td>
                 <td>@cabinet.TeacherFullName</td>
-                <td>@cabinet.Teacher.SubjectName</td>
+                <td>@(cabinet.Teacher?.SubjectName ?? "Не указан")</td>
                 <td>
                     <button class="btn btn-outline-secondary"
-                            @onclick="@(() => SelectCabinet(cabinet))">
-                        Изменить
+                            @onclick="@(() => SelectCabinet(cabinet))"
+                            title="Изменить">
+                        <i class="bi bi-pencil"></i>
                     </button>
                 </td>
                 <td>
-                    <button class="btn btn-outline-danger"
-                            @onclick="@(() => DeleteCabinet(cabinet))">
-                        Удалить
-                    </button>
+                    @if (cabinet.IsDeleted)
+                    {
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-outline-success btn-sm"
+                                    @onclick="@(() => DeleteAction(cabinet, false))"
+                                    title="Восстановить">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm"
+                                    @onclick="@(() => DeleteCabinet(cabinet))"
+                                    title="Удалить окончательно">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="bi bi-trash3"
+                                @onclick="@(() => DeleteAction(cabinet, true))"
+                                title="Перенести в корзину">
+                        </button>
+                    }
                 </td>
                 <td>
                     @if (cabinet.ChangeLogs != null)

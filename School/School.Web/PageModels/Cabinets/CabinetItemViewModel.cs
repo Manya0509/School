@@ -48,6 +48,9 @@ namespace School.Web.PageModels.Cabinets
 
         public string TeacherFullName { get; set; }
         public TeacherModel Teacher { get; set; }
+
+        public bool HasTeachers => TeacherId > 0;
+        public bool IsDeleted { get => _item.IsDeleted; set => _item.IsDeleted = value; }
         public List<ChangeLogJson> ChangeLogs { get; set; }
 
         public object Clone()
