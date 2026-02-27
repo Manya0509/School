@@ -52,8 +52,8 @@ namespace FileTest
             var test1 = InitModel();  //Получаем готовый объект
 
             using (FileStream fs = new FileStream("C:\\Users\\Дарья\\Desktop\\School\\file.json", FileMode.Create))  //Открываем файл,
-                                                                                                                     //Create → перезаписывает файл полностью,
-                                                                                                                     //using → файл гарантированно закроется
+                                                                                                                     //Create -> перезаписывает файл полностью,
+                                                                                                                     //using -> файл гарантированно закроется
             {
                 var json = JsonSerializer.Serialize(test1, PrettyOptions); //(объект -> Json) Используем правила PrettyOptions
                 var buffer = Encoding.Default.GetBytes(json); //Файл принимает байты -> переводим

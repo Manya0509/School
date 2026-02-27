@@ -1,6 +1,8 @@
 ﻿@page "/Cabinet"
 @inherits CabinetPageViewModel
 
+<h3>Кабинеты</h3>
+
 <button class="btn btn-outline-primary btn-sm mb-3 bi bi-search"
         @onclick="ToggleFilters">
 </button>
@@ -47,7 +49,7 @@
     <button type="button" class="btn-close" aria-label="Close"></button>
 </div>
 
-<h3>Кабинеты</h3>
+<CircleLoader IsShowSpiner="IsShowSpiner"></CircleLoader>
 
 <table class="table table-striped">
     <thead>

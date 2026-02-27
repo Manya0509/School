@@ -29,15 +29,17 @@ namespace School.Web.Pages.Management
                     await InvokeAsync(StateHasChanged);
                     await Task.Delay(1);
                     FilterManagement = new FilterManagementModel();
-                    Managements = ManagementService.GetManagements();
 
-                    Toaster.Add("Руководство загружено.", MatBlazor.MatToastType.Info,
-                    null, null,
-                    conf =>
-                    {
-                        conf.VisibleStateDuration = 15000;
-                        conf.ShowProgressBar = true;
-                    });
+                    Search();
+                    //Managements = ManagementService.GetManagements();
+
+                    //Toaster.Add("Руководство загружено.", MatBlazor.MatToastType.Info,
+                    //null, null,
+                    //conf =>
+                    //{
+                    //    conf.VisibleStateDuration = 15000;
+                    //    conf.ShowProgressBar = true;
+                    //});
                 }
                 catch (Exception e)
                 {
@@ -95,7 +97,8 @@ namespace School.Web.Pages.Management
                 FilterManagement.FirstName = "";
                 FilterManagement.Position = "";
 
-                Managements = ManagementService.GetManagements();
+                Search();
+                //Managements = ManagementService.GetManagements();
                 await InvokeAsync(StateHasChanged);
             }
             catch (Exception e)
@@ -305,6 +308,12 @@ namespace School.Web.Pages.Management
                 Console.WriteLine($"Ошибка ManagementPage /HandleReload. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            //base.Dispose(disposing);
+            Managements?.Clear();
         }
 
         //protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)

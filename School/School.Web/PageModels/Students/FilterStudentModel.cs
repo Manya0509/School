@@ -8,5 +8,13 @@ namespace School.Web.PageModels.Students
         public string FirstName { get; set; }
         public int ClassId { get; set; }
         public List<FilterModel> Classes { get; set; }
+
+        public void Clear()
+        { 
+            LastName = string.Empty;
+            FirstName = string.Empty;
+            ClassId = 0;
+
+        }
     }
 }

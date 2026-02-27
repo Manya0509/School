@@ -36,17 +36,20 @@ namespace School.Web.Pages.Cabinet
                     await InvokeAsync(StateHasChanged);
                     await Task.Delay(1);
                     FilterCabinet = new FilterCabinetModel();
-                    FilterCabinet.Teachers = TeacherService.GetFilterModels();
+                    FilterCabinet.Clear();
+                    //FilterCabinet.Teachers = TeacherService.GetFilterModels();
+                    InitFilter();
 
-                    Cabinets = CabinetService.GetCabinets();
+                    Search();
+                    //Cabinets = CabinetService.GetCabinets();
 
-                    Toaster.Add("Кабинеты загружены.", MatBlazor.MatToastType.Info,
-                    null, null,
-                    conf =>
-                    {
-                        conf.VisibleStateDuration = 4000;
-                        conf.ShowProgressBar = true;
-                    });
+                    //Toaster.Add("Кабинеты загружены.", MatBlazor.MatToastType.Info,
+                    //null, null,
+                    //conf =>
+                    //{
+                    //    conf.VisibleStateDuration = 4000;
+                    //    conf.ShowProgressBar = true;
+                    //});
                 }
 
                 catch (Exception e)
@@ -116,7 +119,8 @@ namespace School.Web.Pages.Cabinet
                     Number = "",
                 };
 
-                Cabinets = CabinetService.GetCabinets();
+                //Cabinets = CabinetService.GetCabinets();
+                Search();
                 StateHasChanged();
             }
             catch (Exception e)
@@ -313,5 +317,10 @@ namespace School.Web.Pages.Cabinet
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            //base.Dispose(disposing);
+            Cabinets?.Clear();
+        }
     }
 }

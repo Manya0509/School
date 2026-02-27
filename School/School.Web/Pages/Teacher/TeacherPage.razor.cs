@@ -32,15 +32,16 @@ namespace School.Web.Pages.Teacher
                     await Task.Delay(1);
                     FilterTeacher = new FilterTeacherModel();
 
-                    Teachers = TeacherService.GetTeachers();
+                    Search();
+                    //Teachers = TeacherService.GetTeachers();
 
-                    Toaster.Add("Преподаватели загружены.", MatBlazor.MatToastType.Info,
-                    null, null,
-                    conf =>
-                    {
-                        conf.VisibleStateDuration = 4000;
-                        conf.ShowProgressBar = true;
-                    });
+                    //Toaster.Add("Преподаватели загружены.", MatBlazor.MatToastType.Info,
+                    //null, null,
+                    //conf =>
+                    //{
+                    //    conf.VisibleStateDuration = 4000;
+                    //    conf.ShowProgressBar = true;
+                    //});
                 }
                 catch (Exception e)
                 {
@@ -99,7 +100,8 @@ namespace School.Web.Pages.Teacher
                 FilterTeacher.LastName = "";
                 FilterTeacher.SubjectName = "";
 
-                Teachers = TeacherService.GetTeachers();
+                Search();
+                //Teachers = TeacherService.GetTeachers();
                 StateHasChanged();
             }
             catch (Exception e)
@@ -308,6 +310,12 @@ namespace School.Web.Pages.Teacher
                 Console.WriteLine($"Ошибка TeacherPage /HandleReload. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            //base.Dispose(disposing);
+            Teachers?.Clear();
         }
 
         //protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)

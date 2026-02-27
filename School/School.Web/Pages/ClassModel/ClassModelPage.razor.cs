@@ -32,15 +32,16 @@ namespace School.Web.Pages.ClassModel
                     await Task.Delay(1);
                     FilterClassModel = new FilterClassModel();
 
-                    Classes = ClassModelService.GetClasses();
+                    Search();
+                    //Classes = ClassModelService.GetClasses();
 
-                    Toaster.Add("Классы загружены.", MatBlazor.MatToastType.Info,
-                    null, null,
-                    conf =>
-                    {
-                        conf.VisibleStateDuration = 3000;
-                        conf.ShowProgressBar = true;
-                    });
+                    //Toaster.Add("Классы загружены.", MatBlazor.MatToastType.Info,
+                    //null, null,
+                    //conf =>
+                    //{
+                    //    conf.VisibleStateDuration = 3000;
+                    //    conf.ShowProgressBar = true;
+                    //});
                 }
 
                 catch (Exception e)
@@ -54,6 +55,11 @@ namespace School.Web.Pages.ClassModel
                     await InvokeAsync(StateHasChanged);
                 }
             }
+        }
+
+        protected async Task InitFilter()
+        { 
+            
         }
 
         protected void ToggleFilters()
@@ -95,7 +101,8 @@ namespace School.Web.Pages.ClassModel
 
                 FilterClassModel.Number = "";
 
-                Classes = ClassModelService.GetClasses();
+                Search();
+                //Classes = ClassModelService.GetClasses();
             }
             catch (Exception e)
             {
@@ -342,6 +349,12 @@ namespace School.Web.Pages.ClassModel
                 Console.WriteLine($"Ошибка ClassModelPage /HandleReload. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            //base.Dispose(disposing);
+            Classes?.Clear();
         }
     }
 }

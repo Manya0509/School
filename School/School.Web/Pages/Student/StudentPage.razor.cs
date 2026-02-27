@@ -32,9 +32,12 @@ namespace School.Web.Pages.Student
                     await InvokeAsync(StateHasChanged);
                     await Task.Delay(1);
                     FilterStudent = new FilterStudentModel();
-                    FilterStudent.Classes = ClassModelService.GetFilterModels();
+                    FilterStudent.Clear();
+                    InitFilter();
 
-                    Students = StudentService.GetStudents();
+                    Search();
+
+                    //Students = StudentService.GetStudents();
 
                     Toaster.Add("Студенты загружены.", MatBlazor.MatToastType.Info,
                     null, null,
@@ -55,6 +58,11 @@ namespace School.Web.Pages.Student
                     await InvokeAsync(StateHasChanged);
                 }
             }
+        }
+
+        protected async Task InitFilter()
+        {
+            FilterStudent.Classes = ClassModelService.GetFilterModels();
         }
 
         protected void ToggleFilters()
@@ -94,14 +102,11 @@ namespace School.Web.Pages.Student
         {
             try
             {
-                IsShowSpiner = true;
-                await InvokeAsync(StateHasChanged);
-
                 FilterStudent.FirstName = "";
                 FilterStudent.LastName = "";
                 FilterStudent.ClassId = 0;
 
-                Students = StudentService.GetStudents();
+                Search();
             }
             catch (Exception e)
             {
@@ -110,7 +115,6 @@ namespace School.Web.Pages.Student
             }
             finally
             {
-                IsShowSpiner = false;
                 await InvokeAsync(StateHasChanged);
             }
         }
@@ -329,6 +333,12 @@ namespace School.Web.Pages.Student
                 Console.WriteLine($"Ошибка StudentPage /HandleReload. {e?.Message} {e?.StackTrace}");
                 ShowErrorDialog($"Ошибка: {e.Message}");
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            //base.Dispose(disposing);
+            Students?.Clear();
         }
 
         //protected string GetChangeLog(List<ChangeLogJson> changeLogJsons)
