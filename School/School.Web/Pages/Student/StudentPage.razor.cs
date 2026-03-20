@@ -39,13 +39,13 @@ namespace School.Web.Pages.Student
 
                     //Students = StudentService.GetStudents();
 
-                    Toaster.Add("Студенты загружены.", MatBlazor.MatToastType.Info,
-                    null, null,
-                    conf =>
-                    {
-                        conf.VisibleStateDuration = 3000;
-                        conf.ShowProgressBar = true;
-                    });
+                    //Toaster.Add("Студенты загружены.", MatBlazor.MatToastType.Info,
+                    //null, null,
+                    //conf =>
+                    //{
+                    //    conf.VisibleStateDuration = 3000;
+                    //    conf.ShowProgressBar = true;
+                    //});
                 }
                 catch (Exception e)
                 {

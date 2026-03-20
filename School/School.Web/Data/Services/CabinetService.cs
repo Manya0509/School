@@ -84,13 +84,17 @@ namespace School.Web.Data.Services
             }
         }
 
-        public List<CabinetItemViewModel> GetFilterCabinets(string number)
+        public List<CabinetItemViewModel> GetFilterCabinets(string number, int? teacherId)
         {
             var query = _repository.Get();
 
             if (!string.IsNullOrWhiteSpace(number))
             {
                 query = query.Where(c => c.Number.ToString().Contains(number));
+            }
+            if (teacherId > 0)
+            {
+                query = query.Where(c => c.TeacherId == teacherId);
             }
 
             var cabinets = query.ToList();
@@ -137,3 +141,6 @@ namespace School.Web.Data.Services
         }
     }
 }
+
+
+DevExpress Components 23.1

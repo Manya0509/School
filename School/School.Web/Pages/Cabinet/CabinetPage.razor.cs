@@ -92,7 +92,7 @@ namespace School.Web.Pages.Cabinet
                 IsShowSpiner = true;
                 await InvokeAsync(StateHasChanged);
 
-                Cabinets = CabinetService.GetFilterCabinets(FilterCabinet.Number);
+                Cabinets = CabinetService.GetFilterCabinets(FilterCabinet.Number, FilterCabinet.TeacherId);
             }
             catch (Exception e)
             {
